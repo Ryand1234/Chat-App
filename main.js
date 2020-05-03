@@ -6,6 +6,7 @@ var session = require('express-session')
 var bodyParser = require('body-parser')
 
 var user;
+var logged = 0;
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -23,8 +24,11 @@ io.on('connection', (socket)=>{
 		io.emit('chat message', m1sg);
 	});
 	socket.on('disconnect', ()=>{
-
-		console.log(user," Disconnected");
+	
+		var msg = user + " Disconnected";
+		logged = 0;
+		io.emit('Disconnect', msg);
+		console.log(msg);
 	});
 });
 
@@ -35,14 +39,21 @@ var registerRoute = require('./routes/register');
 
 app.get('/home', (req, res, next)=>{
 
+
 	if(req.session.user == undefined)
                 res.render('login.ejs')
 
         if(req.session.user != undefined){
+		
+		if(logged != 1){
 
-                user = req.session.user;
-                res.render('chat.ejs');
-        }
+        	        user = req.session.user;
+			logged = 1;
+                	res.render('chat.ejs');
+	        }else{
+			res.render('error.ejs');
+		}
+	}
 
 });
 app.use('/login', loginRoute);

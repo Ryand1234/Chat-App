@@ -15,8 +15,12 @@
 			return false;
 		    });
 		    socket.on('chat message', function(m1sg){
-		    	$('#messages').append($('<li>').text(m1sg.msg));
-			$('#messages').append($('<li>').text(m1sg.user));
+			$('#messages').append($('<li>').text("User: " + m1sg.user));
+			$('#messages').append($('<li>').text(m1sg.msg));
+		    });
+
+		    socket.on('Disconnect', function(conn){
+			    $('#messages').append($('<li>').text(conn));
 		    });
 	    });
     </script>
