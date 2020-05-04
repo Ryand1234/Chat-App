@@ -6,6 +6,7 @@ var session = require('express-session')
 var bodyParser = require('body-parser')
 
 var user;
+var active = new Array();
 var logged = 0;
 
 app.set('views', path.join(__dirname, 'views'));
@@ -16,17 +17,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 io.on('connection', (socket)=>{
 
 	console.log(user," Connected");
-	socket.on('chat message', (msg)=>{
+	socket.on('recive message', (msg)=>{
 		m1sg = {
 			msg : msg,
 			user : user
 		};
-		io.emit('chat message', m1sg);
+		io.emit('send message', m1sg);
 	});
 	socket.on('disconnect', ()=>{
 	
 		var msg = user + " Disconnected";
 		logged = 0;
+		active.pull(user);
 		io.emit('Disconnect', msg);
 		console.log(msg);
 	});
@@ -49,6 +51,12 @@ app.get('/home', (req, res, next)=>{
 
         	        user = req.session.user;
 			logged = 1;
+			
+			if(active == undefined)
+				active = [user];
+			else
+				active.push(user);
+
                 	res.render('chat.ejs');
 	        }else{
 			res.render('error.ejs');
