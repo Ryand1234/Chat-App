@@ -38,8 +38,6 @@ mongo.MongoClient.connect('mongodb://localhost:5000', (error, client)=>{
 			socket.on('disconnect', ()=>{
 	
 				var msg = user + " Disconnected";
-				logged = 0;
-				active.pull(user);
 				io.emit('Disconnect', msg);
 				console.log(msg);
 			});
@@ -72,8 +70,8 @@ app.post('/user/login', (req, res, next)=>{
                         res.status(200).json({"msg" : "Error"});
                 else{
 
-                        var chat = client.db('chat');
-                        db.collection('user').findOne({email : req.body.email, passwd : req.body.passwd}, (error, user)=>{
+                        var user_db = client.db('chat').collection('user')
+			user_db.findOne({email : req.body.email, passwd : req.body.passwd}, (error, user)=>{
 
                                 if (user != null){
 					if(logged != 1)
@@ -140,10 +138,14 @@ app.post('/user/register', (req, res, next)=>{
                         res.status(200).json({"msg" : "Error"});
                 else{
 
-                        var db = client.db('chat');
-                        db.collection('user').insertOne(data, (error, user)=>{
+                        var user_db = client.db('chat').collection('user')
+			user_db.insertOne(data, (error, user)=>{
 
-                                res.render('login.ejs');
+                             res.writeHead(200,
+				     { Location: 'http://localhost:3000/login'}
+			     );
+
+				res.send();
 
                         });
                 }

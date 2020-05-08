@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http'
 })
 export class RegisterService {
 
-	private url = '/api/register';
+	private url = '/api/user/register';
   constructor(private http : HttpClient) { }
 	
 	register(data: any) {
