@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActiveService } from './active.service';
+import { ChatService } from './chat.service';
+
 
 @Component({
   selector: 'app-home',
@@ -8,11 +10,20 @@ import { ActiveService } from './active.service';
 })
 export class HomeComponent implements OnInit {
 
-	constructor(public activeService : ActiveService ) { }
-
 	temp : any;
 	msg : any;
+	message : string;
+	message_array : any = new Array();
 	active_user : any = new Array();
+
+	constructor(public activeService : ActiveService,
+                public chatService : ChatService) { 
+	
+		this.chatService.recieveMessage().subscribe((result)=>{
+			this.message_array.push(result);
+		});
+
+	}
 	ngOnInit(): void {
 		this.activeService.active().subscribe((result: any)=>
 		{
@@ -22,6 +33,11 @@ export class HomeComponent implements OnInit {
 			else
 				this.msg = result;
 		});
+	}
+
+	onSubmit(){
+		this.chatService.sendMessage({message : this.message});
+		this.message = '';
 	}
 
 }

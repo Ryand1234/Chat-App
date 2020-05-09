@@ -1,7 +1,7 @@
 var app = require('express')()
 var http = require('http').createServer(app);
 var path = require('path')
-var io = require('socket.io')(http);
+var socket = require('socket.io');
 var session = require('express-session')
 var bodyParser = require('body-parser')
 var mongo = require('mongodb')
@@ -17,22 +17,28 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 mongo.MongoClient.connect('mongodb://localhost:5000', (error, client)=>{
 
-	if(error)
-		res.status(200).json({"msg" : "Internal Server Error"});
-	else{
+	/*if(error)
+		res.status(200).json({"msg" : "Internal Server Error"});*/
+	{
 	
-		var user = client.db('chat').collection('user');
-		var history = client.db('chat').collection('history');
+		var user_db = client.db('chat').collection('user');
+		var history_db = client.db('chat').collection('history');
 
+		 //Server Listen
+                var server = app.listen(3000, ()=>{
+                        console.log("Server listening at http://localhost:3000");
+                });
+
+		const io = socket.listen(server)
 		io.on('connection', (socket)=>{
 		
-			console.log(user," Connected");
-			socket.on('recieve message', (msg)=>{
+			socket.on('client', (msg)=>{
 				m1sg = {
-					msg : msg,
+					msg : msg.message,
 					user : user
 				};
-				io.emit('send message', m1sg);
+				
+				io.emit('server', msg);
 			});
 		
 			socket.on('disconnect', ()=>{
@@ -43,10 +49,6 @@ mongo.MongoClient.connect('mongodb://localhost:5000', (error, client)=>{
 			});
 		});
 
-		//Server Listen
-		http.listen(3000, ()=>{
-			console.log("Server listening at http://localhost:3000");
-		});
 	}
 });
 
