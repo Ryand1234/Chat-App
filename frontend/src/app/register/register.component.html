@@ -3,7 +3,7 @@
 	<p *ngIf="(msg)">{{msg.msg}}</p>
 	<mat-card-content>
 		<div class="details">
-			<form (ngSubmit)="onSubmit()" [formGroup]="user">
+			<form  [formGroup]="user">
 				<mat-form-field>
 					<input matInput formControlName="name" placeholder="Name" type="text" name="name">
 				</mat-form-field>
@@ -25,7 +25,7 @@
 				</mat-form-field>
 				<br>
 				<mat-form-field>
-					<button (onClick)="onSubmit()">Submit</button>
+					<button (click)="onSubmit()">Submit</button>
 				</mat-form-field>
 			</form>
 		</div>

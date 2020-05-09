@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ActiveService } from './active.service';
 import { ChatService } from './chat.service';
 
 
@@ -14,24 +13,20 @@ export class HomeComponent implements OnInit {
 	msg : any;
 	message : string;
 	message_array : any = new Array();
-	active_user : any = new Array();
 
-	constructor(public activeService : ActiveService,
-                public chatService : ChatService) { 
+	constructor(public chatService : ChatService) { 
 	
 		this.chatService.recieveMessage().subscribe((result)=>{
+			console.log("RES: ",result);
 			this.message_array.push(result);
 		});
 
 	}
 	ngOnInit(): void {
-		this.activeService.active().subscribe((result: any)=>
+		this.chatService.retrieveOldMessage().subscribe((result: any)=>
 		{
-			this.temp = result;
-			if(this.temp.msg == undefined)
-				this.active_user = result;
-			else
-				this.msg = result;
+			this.message_array = result;
+			console.log("ARRAY: ",this.message_array);
 		});
 	}
 

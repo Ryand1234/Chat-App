@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home/home.component';
 import { LogoutComponent } from './logout/logout.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { LogoutComponent } from './logout/logout.component';
     LogoutComponent
   ],
   imports: [
+    HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
     MatToolbarModule,

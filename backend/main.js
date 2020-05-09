@@ -6,16 +6,17 @@ var session = require('express-session')
 var bodyParser = require('body-parser')
 var mongo = require('mongodb')
 
-var user;
+var user_name = '';
 var active = new Array();
 var logged = 0;
+const MONGO_URL = 'mongodb://localhost:5000';
 
 
 app.use(session({secret:'ChatApp', resave:true, saveUninitialized: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-mongo.MongoClient.connect('mongodb://localhost:5000', (error, client)=>{
+mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
 
 	/*if(error)
 		res.status(200).json({"msg" : "Internal Server Error"});*/
@@ -32,25 +33,47 @@ mongo.MongoClient.connect('mongodb://localhost:5000', (error, client)=>{
 		const io = socket.listen(server)
 		io.on('connection', (socket)=>{
 		
-			socket.on('client', (msg)=>{
-				m1sg = {
-					msg : msg.message,
-					user : user
-				};
-				
-				io.emit('server', msg);
-			});
+
+			console.log("USER: ",user_name);
 		
-			socket.on('disconnect', ()=>{
+				socket.on('client', (msg)=>{
+					m1sg = {
+						message : msg.message,
+						user : user_name
+					};
+					
+					history_db.insertOne(m1sg, (err, insert)=>{
+						if(err)
+							console.log("Error: ", err);
+
+						io.emit('server', m1sg);
+					});
+				});
+		
+				socket.on('disconnect', ()=>{
 	
-				var msg = user + " Disconnected";
-				io.emit('Disconnect', msg);
-				console.log(msg);
-			});
+					var msg = user_name + " Disconnected";
+					io.emit('Disconnect', msg);
+					console.log(msg);
+				});
 		});
 
 	}
 });
+
+
+//Retrieve Old Message from Database
+app.get('/message/history', (req, res, next)=>{
+
+	mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
+	
+		var history = client.db('chat').collection('history');
+		history.find({}).toArray((err, message)=>{
+			res.status(200).json(message);
+		});
+	});
+});
+
 
 //Active User Endpoint
 app.get('/user/active',(req, res, next)=>{
@@ -76,24 +99,15 @@ app.post('/user/login', (req, res, next)=>{
 			user_db.findOne({email : req.body.email, passwd : req.body.passwd}, (error, user)=>{
 
                                 if (user != null){
-					if(logged != 1)
-					{
-						console.log("USER: ",user);
-	                                        req.session.user = user.name;
-						logged = 1;
+                                       	user_name = user.name;
 
-        			                if(active == undefined)
-                        			        active = [user];
-		                	        else
-	        	                	        active.push(user);
-					}
-					else
-						res.status(200).json({"msg" : "User Already Logged In"});
+       			                if(active == undefined)
+                       			        active = [user_name];
+	                	        else
+        	                	        active.push(user_name);
 
-                                        res.writeHead(200,
-                		                { Location: 'http://localhost:5000/home'}
-        	                	);
-		                        res.end();
+					console.log("ARRAY: ",active);
+                                        res.status(200).json({"msg" : "Login SuccessFUll"});
                                 }else
                                         res.status(200).json({"msg" : "Incorrect Email/Password"});
 
@@ -113,9 +127,9 @@ app.post('/user/logout', (req, res, next)=>{
                 }
                 else{
 			var msg = user + " Disconnected";
-                        logged = 0;
-                        active.pull(user);
+                        active.pull(user_name);
                         console.log(msg);
+			user_name= '';
 			res.status(200).json({"msg" : "Logout Sucessfull"});
 		}
         });
@@ -144,7 +158,7 @@ app.post('/user/register', (req, res, next)=>{
 			user_db.insertOne(data, (error, user)=>{
 
                              res.writeHead(200,
-				     { Location: 'http://localhost:3000/login'}
+				     { Location: 'http://localhost:4200/login'}
 			     );
 
 				res.send();

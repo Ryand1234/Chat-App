@@ -1,6 +1,7 @@
 <mat-card class="login">
 	<h3 class="head">Log In</h3>
 	<p *ngIf="(msg)"> {{msg.msg}}</p>
+	<a *ngIf="(msg)" href="/home">Chat HomePage</a>
 	<mat-card-content>
 		<div class="details">
 			<form (ngSubmit)="onSubmit()" [formGroup]="info">
