@@ -12,6 +12,7 @@ var user_name = '';
 var active = new Array();
 var logged = 0;
 const MONGO_URL = 'mongodb://localhost:5000';
+var cri; //Current Room Id
 
 
 app.use(session({secret:'ChatApp', resave:true, saveUninitialized: true}));
@@ -25,7 +26,7 @@ mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
 	{
 	
 		var user_db = client.db('chat').collection('user');
-		var history_db = client.db('chat').collection('history');
+		var room_db = client.db('chat').collection('room');
 
 		 //Server Listen
                 var server = app.listen(3000, ()=>{
@@ -44,11 +45,23 @@ mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
 						user : user_name
 					};
 					
-					history_db.insertOne(m1sg, (err, insert)=>{
+
+					room_db.findOne({_id : cri }, (error, room)=>{
 						if(err)
 							console.log("Error: ", err);
 
-						io.emit('server', m1sg);
+						var history = room.history;
+						if(history == undefined)
+							history = [m1sg];
+						else
+							history.push(m1sg);
+
+						room_db.updateOne({_id : cri } , { $set : { history : history } }, (err1, update)=>{
+						
+							if(err1)
+								console.log("Error");
+							io.emit('server', m1sg);
+						});
 					});
 				});
 		
@@ -61,6 +74,89 @@ mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
 		});
 
 	}
+});
+
+
+//Routes related to Chat/Chat Rooms
+
+
+//Create Chat Room
+app.post('/chat/create', (req, res, next)=>{
+
+	var room = {
+		name : req.body.name,
+		history : new Array(),
+		users : new Array()
+	}
+
+	mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
+
+		var room_db = client.db('chat').collection('room');
+		room_db.insertOne(new_room, (err, room)=>{
+			if(err)
+				res.status(200).json({"msg" : "Error Creating Room "});
+			else
+				res.status(200).json({"msg" : "Room Created" });
+		});
+	});
+});
+
+
+//Get All Rooms
+app.get('/chat/all', (req, res, next)=>{
+
+	mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
+	
+		client.db('chat').collection('room').find({}).toArray((err, rooms)=>{
+		
+			if(err)
+				res.status(200).json({"msg" : "Internal Server Error"});
+			else
+				res.status(200).json(rooms);
+		});
+	});
+});
+
+//Join Chat Room
+app.get('/chat/join/:room', (req, res, next)=>{
+
+	var room_id = req.params.room;
+	mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
+	
+		var room_db = client.db('chat').collection('room');
+		var user_db = client.db('chat').collection('user');
+		var name;
+
+		room_db.findOne({_id : mongo.ObjectId(room_id)}, (err, room)=>{
+		
+			var user = room.users;
+			name = room.name;
+			if(user == undefined)
+				user = [{req.session.user, req.session._id}];
+			else
+				user.push({req.session.user, req.session._id});
+			room_db.updateOne({_id : mongo.ObjectId(room_id)}, {$set : { users : user } }, (err, update)=>{
+			
+				if(err)
+					res.status(200).json({"msg" : "Internal Server Error"});
+			});
+		});
+	
+		user_db.findOne({_id : req.session._id}, (err, user)=>{
+			var room = user.rooms;
+			if(room == undefined)
+				room = [{ name, mongo.ObjectId(room_id)}];
+			else
+				room.push({name, mongo.ObjectId(room_id)});
+
+			user_db.updateOne({_id : req.session._id}, { $set : { rooms : room } } , (err, update)=>{
+				if(err)
+					res.status(200).json({"msg" : "Internal Server Error"});
+				else
+					res.status(200).json({"msg" : "Room Joined"});
+			});
+		});
+	});
 });
 
 
@@ -77,6 +173,9 @@ app.get('/message/history', (req, res, next)=>{
 });
 
 
+
+//Routes related to Authentication/User
+
 //Active User Endpoint
 app.get('/user/active',(req, res, next)=>{
 
@@ -87,6 +186,7 @@ app.get('/user/active',(req, res, next)=>{
 	else
 		res.status(200).json({"msg" : "No active User"});
 });
+
 
 //Login End Point
 app.post('/user/login', (req, res, next)=>{
@@ -112,6 +212,7 @@ app.post('/user/login', (req, res, next)=>{
         	        	        	        active.push(user_name);
 
 						console.log("ARRAY: ",active);
+						req.session._id = user._id;
                                         	res.status(200).json({"msg" : "Login SuccessFUll"});
 					}
 					else
@@ -155,7 +256,8 @@ app.post('/user/register', (req, res, next)=>{
                 passwd : hashedPasswd,
                 name : req.body.name,
 		mobile: req.body.mobile,
-		username: req.body.username
+		username: req.body.username,
+		room : new Array()
         };
 
         mongo.MongoClient.connect('mongodb://localhost:5000', (err, client)=>{
