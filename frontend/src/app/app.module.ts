@@ -14,6 +14,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home/home.component';
 import { LogoutComponent } from './logout/logout.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ActiveUserComponent } from './active-user/active-user.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { HttpClientModule } from '@angular/common/http';
     LoginComponent,
     RegisterComponent,
     HomeComponent,
-    LogoutComponent
+    LogoutComponent,
+    ActiveUserComponent
   ],
   imports: [
     HttpClientModule,

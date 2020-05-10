@@ -5,6 +5,8 @@ var socket = require('socket.io');
 var session = require('express-session')
 var bodyParser = require('body-parser')
 var mongo = require('mongodb')
+var bcrypt = require('bcryptjs')
+var jwt = require('jsonwebtoken')
 
 var user_name = '';
 var active = new Array();
@@ -96,20 +98,26 @@ app.post('/user/login', (req, res, next)=>{
                 else{
 
                         var user_db = client.db('chat').collection('user')
-			user_db.findOne({email : req.body.email, passwd : req.body.passwd}, (error, user)=>{
+			user_db.findOne({email : req.body.email}, (error, user)=>{
 
                                 if (user != null){
-                                       	user_name = user.name;
+					var isValid = bcyrpt.compareSync(req.body.passwd, user.passwd);
+					if(isValid)
+					{
+						user_name = user.name;
 
-       			                if(active == undefined)
-                       			        active = [user_name];
-	                	        else
-        	                	        active.push(user_name);
+	       			                if(active == undefined)
+        	               			        active = [user_name];
+	        	        	        else
+        	        	        	        active.push(user_name);
 
-					console.log("ARRAY: ",active);
-                                        res.status(200).json({"msg" : "Login SuccessFUll"});
+						console.log("ARRAY: ",active);
+                                        	res.status(200).json({"msg" : "Login SuccessFUll"});
+					}
+					else
+						res.status(200).json({"msg" : "Incorrect Password"});
                                 }else
-                                        res.status(200).json({"msg" : "Incorrect Email/Password"});
+                                        res.status(200).json({"msg" : "Incorrect Email"});
 
                         });
                 }
@@ -118,7 +126,7 @@ app.post('/user/login', (req, res, next)=>{
 
 
 //Logout EndPoint
-app.post('/user/logout', (req, res, next)=>{
+app.get('/user/logout', (req, res, next)=>{
 
 	req.session.destroy((err) => {
 
@@ -140,9 +148,11 @@ app.post('/user/logout', (req, res, next)=>{
 //Register EndPoint
 app.post('/user/register', (req, res, next)=>{
 
+	var hashedPasswd = bcrypt.hashSync(req.body.passwd, 8);
+	console.log("Hashed Password: ",hashedPasswd);
         var data = {
                 email : req.body.email,
-                passwd : req.body.passwd,
+                passwd : hashedPasswd,
                 name : req.body.name,
 		mobile: req.body.mobile,
 		username: req.body.username
@@ -157,11 +167,7 @@ app.post('/user/register', (req, res, next)=>{
                         var user_db = client.db('chat').collection('user')
 			user_db.insertOne(data, (error, user)=>{
 
-                             res.writeHead(200,
-				     { Location: 'http://localhost:4200/login'}
-			     );
-
-				res.send();
+                             res.status(200).json({"msg" : "User Registered"});
 
                         });
                 }
