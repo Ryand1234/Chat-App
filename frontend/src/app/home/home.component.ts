@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ChatService } from './chat.service';
+import { RoomService } from './room.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -11,28 +12,39 @@ export class HomeComponent implements OnInit {
 
 	temp : any;
 	msg : any;
-	message : string;
-	message_array : any = new Array();
+	room : string;
+	room_array : any = new Array();
 
-	constructor(public chatService : ChatService) { 
-	
-		this.chatService.recieveMessage().subscribe((result)=>{
-			console.log("RES: ",result);
-			this.message_array.push(result);
-		});
-
-	}
+	constructor(public roomService : RoomService,
+		public router : Router) { }
 	ngOnInit(): void {
-		this.chatService.retrieveOldMessage().subscribe((result: any)=>
+		this.roomService.retrieveRooms().subscribe((result: any)=>
 		{
-			this.message_array = result;
-			console.log("ARRAY: ",this.message_array);
+			this.room_array = result;
+			console.log("ARRAY: ",this.room_array);
 		});
 	}
 
+	_id : string;
+	find(name: string){
+
+		for(let room of this.room_array){
+			if(room.name == name){
+				this._id = room._id;
+				break;
+			}
+		}
+		return this._id;
+			
+	}
+
+
+	token: string;
 	onSubmit(){
-		this.chatService.sendMessage({message : this.message});
-		this.message = '';
+		this.token = this.find(this.room);
+		this.roomService.join(this.token).subscribe((result:any)=>{
+		this.router.navigate(['/chat']);
+		});
 	}
 
 }

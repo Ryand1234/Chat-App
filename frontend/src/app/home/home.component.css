@@ -1,8 +1,10 @@
+
 .chat-head {
 	text-align: center;
 }
 
 .chat-message {
+
 	align: center;
 	margin-left : 4cm;
 	margin-right : 3cm;
@@ -30,4 +32,9 @@ button {
 	background-color: cyan;
 	margin-left : 3cm;
 	margin-right: 3cm;
+}
+
+a {
+	text-decoration: none;
+	color: black;
 }

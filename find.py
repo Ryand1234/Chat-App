@@ -5,7 +5,7 @@ import re
 
 f = open('chat.log','a')
 
-with open('.chat.log') as log:
+with open('/home/riyan/github/Chat-App/.chat.log') as log:
     for line in log.readlines():
         f.write(line);
         res = re.search(r"^Error \[([A-Z_]+)\]: ([a-zA-Z_ ]+)", line.strip())

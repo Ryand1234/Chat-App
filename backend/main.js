@@ -9,6 +9,7 @@ var bcrypt = require('bcryptjs')
 var jwt = require('jsonwebtoken')
 
 var user_name = '';
+var socket_id = {};
 var active = new Array();
 var logged = 0;
 const MONGO_URL = 'mongodb://localhost:5000';
@@ -37,16 +38,19 @@ mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
 		io.on('connection', (socket)=>{
 		
 
+			socket.user = user_name;
+			socket.database_id = cri;
 			console.log("USER: ",user_name);
 		
 				socket.on('client', (msg)=>{
 					m1sg = {
 						message : msg.message,
-						user : user_name
+						user : socket.user
 					};
 					
 
-					room_db.findOne({_id : cri }, (error, room)=>{
+	//				console.log("ID: ",socket.database_id);
+					room_db.findOne({_id : new mongo.ObjectId(socket.database_id) }, (err, room)=>{
 						if(err)
 							console.log("Error: ", err);
 
@@ -56,7 +60,7 @@ mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
 						else
 							history.push(m1sg);
 
-						room_db.updateOne({_id : cri } , { $set : { history : history } }, (err1, update)=>{
+						room_db.updateOne({_id : new mongo.ObjectId(socket.database_id) } , { $set : { history : history } }, (err1, update)=>{
 						
 							if(err1)
 								console.log("Error");
@@ -81,9 +85,9 @@ mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
 
 
 //Create Chat Room
-app.post('/chat/create', (req, res, next)=>{
+app.post('/room/create', (req, res, next)=>{
 
-	var room = {
+	var new_room = {
 		name : req.body.name,
 		history : new Array(),
 		users : new Array()
@@ -103,12 +107,19 @@ app.post('/chat/create', (req, res, next)=>{
 
 
 //Get All Rooms
-app.get('/chat/all', (req, res, next)=>{
+app.get('/rooms', (req, res, next)=>{
 
 	mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
 	
 		client.db('chat').collection('room').find({}).toArray((err, rooms)=>{
 		
+			console.log("ROOM: ",rooms);
+			if((rooms.length > 0)&&(rooms != null)){
+				for(var i = 0; i<rooms.length; i++){
+					rooms[i]['_id'] = rooms[i]['_id'].toString();
+				}
+	//			console.log("ROOMS: ",rooms);
+			}
 			if(err)
 				res.status(200).json({"msg" : "Internal Server Error"});
 			else
@@ -118,45 +129,71 @@ app.get('/chat/all', (req, res, next)=>{
 });
 
 //Join Chat Room
-app.get('/chat/join/:room', (req, res, next)=>{
+app.get('/room/join/:room', (req, res, next)=>{
 
 	var room_id = req.params.room;
+	if(req.session._id != null){
 	mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
 	
 		var room_db = client.db('chat').collection('room');
 		var user_db = client.db('chat').collection('user');
 		var name;
+		var present = false;
+		cri = room_id;
 
 		room_db.findOne({_id : mongo.ObjectId(room_id)}, (err, room)=>{
 		
 			var user = room.users;
+			if(user != undefined){
+				for(var i = 0; i < user.length; i++){
+				
+					if(user[i][1].equals(new mongo.ObjectId(req.session._id))){
+						present = true;
+						break;
+					}
+			//		else{
+			//			console.log("USER: ",user[i][1]," REQ: ",req.session._id);
+			//		}
+				}
+			}
+			//console.log("IN PRE: ",present);
 			name = room.name;
-			if(user == undefined)
-				user = [{req.session.user, req.session._id}];
-			else
-				user.push({req.session.user, req.session._id});
-			room_db.updateOne({_id : mongo.ObjectId(room_id)}, {$set : { users : user } }, (err, update)=>{
-			
-				if(err)
-					res.status(200).json({"msg" : "Internal Server Error"});
-			});
-		});
-	
-		user_db.findOne({_id : req.session._id}, (err, user)=>{
-			var room = user.rooms;
-			if(room == undefined)
-				room = [{ name, mongo.ObjectId(room_id)}];
-			else
-				room.push({name, mongo.ObjectId(room_id)});
-
-			user_db.updateOne({_id : req.session._id}, { $set : { rooms : room } } , (err, update)=>{
-				if(err)
-					res.status(200).json({"msg" : "Internal Server Error"});
+			req.session.database_id = room_id;
+			if(present == false){
+				
+				if(user == undefined)
+					user = [[req.session.user, new mongo.ObjectId(req.session._id)]];
 				else
-					res.status(200).json({"msg" : "Room Joined"});
-			});
+					user.push([req.session.user, new mongo.ObjectId(req.session._id)]);
+				room_db.updateOne({_id : new mongo.ObjectId(room_id)}, {$set : { users : user } }, (err, update)=>{
+				
+					if(err)
+						res.status(200).json({"msg" : "Internal Server Error"});
+	
+				});
+				user_db.findOne({_id : new mongo.ObjectId(req.session._id)}, (err, user)=>{
+					var room = user.rooms;
+					if(room == undefined)
+						room = [[ name, mongo.ObjectId(room_id)]];
+					else
+						room.push([name, mongo.ObjectId(room_id)]);
+		
+					user_db.updateOne({_id : new mongo.ObjectId(req.session._id)}, { $set : { rooms : room } } , (err, update)=>{
+						if(err)
+							res.status(200).json({"msg" : "Internal Server Error"});
+						else{
+							res.status(200).json({"msg" : "Room Joined"});
+						}
+					});
+				});
+			}
+			else
+				res.status(200).json({"msg" : "User Already in room"});
 		});
 	});
+	}
+	else
+		res.status(200).json({"msg" : "Please Login to join a room"});
 });
 
 
@@ -165,9 +202,10 @@ app.get('/message/history', (req, res, next)=>{
 
 	mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
 	
-		var history = client.db('chat').collection('history');
-		history.find({}).toArray((err, message)=>{
-			res.status(200).json(message);
+		var room_db = client.db('chat').collection('room');
+		room_db.findOne({_id : new mongo.ObjectId(req.session.database_id)}, (err, room)=>{
+			//console.log("ROOM: ",room," ID: ",req.session.database_id," Type: ",typeof req.session.database_id);
+			res.status(200).json(room.history);
 		});
 	});
 });
@@ -201,7 +239,7 @@ app.post('/user/login', (req, res, next)=>{
 			user_db.findOne({email : req.body.email}, (error, user)=>{
 
                                 if (user != null){
-					var isValid = bcyrpt.compareSync(req.body.passwd, user.passwd);
+					var isValid = bcrypt.compareSync(req.body.passwd, user.passwd);
 					if(isValid)
 					{
 						user_name = user.name;
@@ -213,6 +251,7 @@ app.post('/user/login', (req, res, next)=>{
 
 						console.log("ARRAY: ",active);
 						req.session._id = user._id;
+						req.session.user = user.name;
                                         	res.status(200).json({"msg" : "Login SuccessFUll"});
 					}
 					else
@@ -229,16 +268,17 @@ app.post('/user/login', (req, res, next)=>{
 //Logout EndPoint
 app.get('/user/logout', (req, res, next)=>{
 
+	var msg = req.session.user + " Disconnected";
+                        active.pull(req.session.user);
+
 	req.session.destroy((err) => {
 
                 if(err) {
                         res.status(200).json({"msg" : "Error in Logout"});
                 }
                 else{
-			var msg = user + " Disconnected";
-                        active.pull(user_name);
+	
                         console.log(msg);
-			user_name= '';
 			res.status(200).json({"msg" : "Logout Sucessfull"});
 		}
         });

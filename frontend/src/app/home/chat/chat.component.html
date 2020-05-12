@@ -1,0 +1,19 @@
+<h3 class="chat-head">Chat</h3>
+<mat-card class="chat-main">
+        <mat-card-content>
+                <div *ngFor="let message of message_array">
+                        <mat-card-content class="chat-text">
+                                <p>{{message.message}}</p>
+                                <mat-card-content class="chat-text-user">
+                                        <p>{{message.user}}</p>
+                                </mat-card-content>
+                        </mat-card-content>
+                </div>
+        </mat-card-content>
+</mat-card>
+
+<div class="chat-message">
+        <input [(ngModel)]="message" name="Message" placeholder="Message">
+        <button (click)="onSubmit()">Send</button>
+</div>
+
