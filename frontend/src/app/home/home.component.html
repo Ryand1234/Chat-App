@@ -1,6 +1,10 @@
 
-<h3 class="chat-head">Chat</h3>
+<h3 class="chat-head">Rooms</h3>
 <mat-card class="chat-main">
+	<a href="/room/create">Create Room</a>
+	<br>
+	<a href="/chat/personal" style=" text-align: right;">Personal Chat</a>
+	<div>
 	<mat-card-content>
 		<div *ngFor="let room of room_array">
 			<mat-card-content class="chat-text">
@@ -8,10 +12,10 @@
 			</mat-card-content>
 		</div>	
 	</mat-card-content>
+	</div>
 </mat-card>
 
 <div class="chat-message">
 	<input [(ngModel)]="room" name="room" placeholder="Room Name">
 	<button (click)="onSubmit()">Join</button>
 </div>
-<a href="/room/create">Create Room</a>

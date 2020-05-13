@@ -1,0 +1,9 @@
+<mat-card class="personal-chat">
+	<mat-card-content>
+		<div *ngFor="let user of users">
+			<mat-card-content>
+				<a href="/chat/personal/{{user._id}}">{{user.name}}</a>
+			</mat-card-content>
+		</div>
+	</mat-card-content>
+</mat-card>

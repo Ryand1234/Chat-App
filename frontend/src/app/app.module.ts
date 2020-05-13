@@ -17,6 +17,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ActiveUserComponent } from './active-user/active-user.component';
 import { ChatComponent } from './home/chat/chat.component';
 import { CreateRoomComponent } from './create-room/create-room.component';
+import { PersonalComponent } from './home/personal/personal.component';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { CreateRoomComponent } from './create-room/create-room.component';
     LogoutComponent,
     ActiveUserComponent,
     ChatComponent,
-    CreateRoomComponent
+    CreateRoomComponent,
+    PersonalComponent
   ],
   imports: [
     HttpClientModule,

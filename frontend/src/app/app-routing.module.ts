@@ -7,12 +7,14 @@ import { LogoutComponent } from './logout/logout.component';
 import { ActiveUserComponent } from './active-user/active-user.component';
 import { CreateRoomComponent } from './create-room/create-room.component';
 import { ChatComponent } from './home/chat/chat.component';
+import { PersonalComponent } from './home/personal/personal.component';
 
 
 const routes: Routes = [
 { path: '', redirectTo: '/room', pathMatch: 'full' },
 { path: 'login', component: LoginComponent },
 { path: 'chat', component: ChatComponent },
+{ path: 'chat/personal', component: PersonalComponent },
 { path: 'register', component: RegisterComponent },
 { path: 'room/create', component: CreateRoomComponent },
 { path: 'room', component: HomeComponent },

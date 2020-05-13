@@ -113,7 +113,7 @@ app.get('/rooms', (req, res, next)=>{
 	
 		client.db('chat').collection('room').find({}).toArray((err, rooms)=>{
 		
-			console.log("ROOM: ",rooms);
+			//console.log("ROOM: ",rooms);
 			if((rooms.length > 0)&&(rooms != null)){
 				for(var i = 0; i<rooms.length; i++){
 					rooms[i]['_id'] = rooms[i]['_id'].toString();
@@ -211,8 +211,33 @@ app.get('/message/history', (req, res, next)=>{
 });
 
 
-
 //Routes related to Authentication/User
+
+
+//Get All Users
+app.get('/users', (req, res, next)=>{
+
+	var user_array = new Array();
+	mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
+	
+		var user_db = client.db('chat').collection('user');
+		user_db.find({}).toArray((err, user)=>{
+		
+			for(var i = 0; i < user.length; i++){
+			
+				if(user[i].name != req.session.user){
+					if(user_array == undefined)
+						user_array = [user[i]];
+					else
+						user_array.push(user[i]);
+				}
+			}
+
+			res.status(200).json(user_array);
+		
+		});
+	});
+});
 
 //Active User Endpoint
 app.get('/user/active',(req, res, next)=>{
@@ -269,7 +294,10 @@ app.post('/user/login', (req, res, next)=>{
 app.get('/user/logout', (req, res, next)=>{
 
 	var msg = req.session.user + " Disconnected";
-                        active.pull(req.session.user);
+        var i = active.indexOf(req.session.user);
+	if(i > -1)
+		active.splice(i, 1);
+
 
 	req.session.destroy((err) => {
 
