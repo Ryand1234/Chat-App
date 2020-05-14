@@ -1,0 +1,16 @@
+<mat-card class="pchat">
+        <mat-card-content class="pchat-content">
+                <div *ngFor="let message of chat">
+                        <mat-card-content class="pchat-message">
+                                <p>{{message.message}}</p>
+                                <p>{{message.user}}</p>
+                        </mat-card-content>
+                </div>
+        </mat-card-content>
+</mat-card>
+
+<div class="pchat-message">
+        <input [(ngModel)]="message" type="text" placeholder="Message">
+        <button (click)="onSubmit">Send</button>
+</div>
+

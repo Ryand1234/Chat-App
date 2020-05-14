@@ -197,8 +197,8 @@ app.get('/room/join/:room', (req, res, next)=>{
 });
 
 
-//Retrieve Old Message from Database
-app.get('/message/history', (req, res, next)=>{
+//Retrieve Old Message of Room from Database
+app.get('/room/chat/history', (req, res, next)=>{
 
 	mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
 	
@@ -208,6 +208,12 @@ app.get('/message/history', (req, res, next)=>{
 			res.status(200).json(room.history);
 		});
 	});
+});
+
+
+//Retrive Old Message of Personal User
+app.get('/chat/history/:id', (req, res, next)=>{
+
 });
 
 

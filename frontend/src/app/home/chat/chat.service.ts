@@ -10,7 +10,7 @@ import { HttpClient } from '@angular/common/http';
 export class ChatService {
 
 	private socket = io('http://localhost:3000');
-	private old_url = '/api/message/history';
+	private old_url = '/api/room/chat/history';
 	constructor(private http : HttpClient) { }
 
 
