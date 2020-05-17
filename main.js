@@ -42,7 +42,25 @@ mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
 			socket.database_id = cri;
 			console.log("USER: ",user_name);
 		
-				socket.on('client', (msg)=>{
+
+				socket.user = user;
+				socket._id = id;
+				socket.on('personal client', (msg)=>{
+					data = {
+						message: msg.message,
+						sender: socket.user
+					}
+
+					mongo.MongoClient(MONGO_URL, (error, client)=>{
+					
+						var user_db = client.db('chat').collection('user')
+						var message_db = client.db('chat').collection('message')
+
+						user_db.findOne({_id : new mongo.ObjectId(socket._id)}, (
+					});
+				});
+
+				socket.on('client ', (msg)=>{
 					m1sg = {
 						message : msg.message,
 						user : socket.user
@@ -213,7 +231,43 @@ app.get('/room/chat/history', (req, res, next)=>{
 
 //Retrive Old Message of Personal User
 app.get('/chat/history/:id', (req, res, next)=>{
+	
+	var token = req.body.id;
+	mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
+		
+		var user_db = client.db('chat').collection('user')
+		user_db.findOne({_id : new mongo.ObjectId(token)}, (err, Ruser)=>{
+			user_db.findOne({_id: new mongo.ObjectId(req.session._id)}, (err1, user)=>{
+				
+				user = user.name;
+				id = user['_id'].toString();
+				var ruser = Ruser.name;
+				var pc = user.pc;
+				if(pc == undefined){
+					res.status(200);
+				}
+				else{
+					for(var i = 0; i < pc.length; i++)
+					{
+						if(ruser == pc[i].user)
+						{
+							break;
+						}
+					}
 
+					console.log("ID: ",pc[i]._id);
+					var message_db = client.db('chat').collection('message');
+					message_db.findOne({_id : new mongo.ObjectId(pc[i]._id)}, (err2, message)=>{
+					
+						if(message == null)
+							res.status(200)
+						else
+							res.status(200).json(message.message);
+					});
+				}
+			});
+		});
+	});
 });
 
 
