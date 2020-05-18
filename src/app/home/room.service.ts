@@ -14,10 +14,10 @@ export class RoomService {
 
 	private httpOptionsPlain = {
   headers: new HttpHeaders({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
+    'Accept': 'text/plain',
+    'Content-Type': 'text/plain'
   }),
-  'responseType': 'json'
+  'responseType': 'text'
 };
 	join(token: string){
 		var new_url = this.join_url + token;

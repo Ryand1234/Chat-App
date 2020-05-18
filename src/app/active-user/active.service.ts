@@ -15,7 +15,7 @@ export class ActiveService {
     'Accept': 'text/plain',
     'Content-Type': 'text/plain'
   }),
-  'responseType': 'json'
+  'responseType': 'text'
 };
 	active(){
 		return this.http.get(this.url, this.httpOptionsPlain);

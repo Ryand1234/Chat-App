@@ -18,7 +18,7 @@ export class ChatService {
     'Accept': 'text/plain',
     'Content-Type': 'text/plain'
   }),
-  'responseType': 'json'
+  'responseType': 'text'
 };
 	retrieveOldMessage() {
 		return this.http.get(this.old_url, this.httpOptionsPlain);
