@@ -105,6 +105,7 @@ app.get('*', function (req, res) {
   res.sendfile('./src/index.html'); // load our index.html file
 });
 
+
 //Routes related to Chat/Chat Rooms
 
 
