@@ -15,7 +15,7 @@ export class RoomService {
 	httpOptions = new HttpHeaders({'Content-Type':'application/json; charset=utf-8'});
 	join(token: string){
 		var new_url = this.join_url + token;
-		return this.http.get(new_url, { headers: this.httpOptions, responseType: 'json'});
+		return this.http.post(new_url, { headers: this.httpOptions, responseType: 'json'});
 	}
 
 	retrieveRooms(){

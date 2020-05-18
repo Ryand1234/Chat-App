@@ -10,6 +10,6 @@ export class GetUserService {
 	constructor(private http : HttpClient) { }
 
 	getUser(){
-		return this.http.get(this.url);
+		return this.http.post(this.url);
 	}
 }

@@ -157,7 +157,7 @@ app.post('/api/rooms', (req, res, next)=>{
 });
 
 //Join Chat Room
-app.get('/api/room/join/:room', (req, res, next)=>{
+app.post('/api/room/join/:room', (req, res, next)=>{
 
 	var room_id = req.params.room;
 	if(req.session._id != null){
@@ -226,7 +226,7 @@ app.get('/api/room/join/:room', (req, res, next)=>{
 
 
 //Retrieve Old Message of Room from Database
-app.get('/api/room/chat/history', (req, res, next)=>{
+app.post('/api/room/chat/history', (req, res, next)=>{
 
 	mongo.MongoClient.connect(MONGO_URI, (error, client)=>{
 	
@@ -240,7 +240,7 @@ app.get('/api/room/chat/history', (req, res, next)=>{
 
 
 //Retrive Old Message of Personal User
-app.get('/api/chat/history/:id', (req, res, next)=>{
+app.post('/api/chat/history/:id', (req, res, next)=>{
 	
 	var token = req.body.id;
 	mongo.MongoClient.connect(MONGO_URI, (error, client)=>{
@@ -285,7 +285,7 @@ app.get('/api/chat/history/:id', (req, res, next)=>{
 
 
 //Get All Users
-app.get('/api/users', (req, res, next)=>{
+app.post('/api/users', (req, res, next)=>{
 
 	var user_array = new Array();
 	mongo.MongoClient.connect(MONGO_URI, (error, client)=>{
@@ -310,7 +310,7 @@ app.get('/api/users', (req, res, next)=>{
 });
 
 //Active User Endpoint
-app.get('/api/user/active',(req, res, next)=>{
+app.post('/api/user/active',(req, res, next)=>{
 
 	if(active.length > 0)
 	{
@@ -361,7 +361,7 @@ app.post('/api/user/login', (req, res, next)=>{
 
 
 //Logout EndPoint
-app.get('/api/user/logout', (req, res, next)=>{
+app.post('/api/user/logout', (req, res, next)=>{
 
 	var msg = req.session.user + " Disconnected";
         var i = active.indexOf(req.session.user);
