@@ -35,7 +35,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 
 		 //Server Listen
                 var server = app.listen(process.env.PORT||3000, ()=>{
-                        console.log(`Server listening at http://localhost:${process.env.PORT||3000}`);
+                        console.log(`Server listening at ${process.env.HOST}:${process.env.PORT||3000}`);
                 });
 
 		const io = socket.listen(server)

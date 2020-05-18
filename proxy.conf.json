@@ -1,6 +1,5 @@
 {
   "/api/*": {
-    "target": "http://localhost:3000",
-    "pathRewrite": {"^/api" : ""}
+    "target": "https://chating1-app.herokuapp.com"
   }
 }
