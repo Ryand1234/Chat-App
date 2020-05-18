@@ -18,7 +18,7 @@ const MONGO_URI = process.env.MONGOLAB_URI||'mongodb://localhost:5000'
 var cri; //Current Room Id
 
 
-//app.use(express.static(__dirname, '/dist', {index: false}));
+app.use(express.static(__dirname + '/dist'));
 app.use(session({secret:'ChatApp', resave:true, saveUninitialized: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -104,7 +104,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 
 
 //For All routes
-app.get('*', function(req, res) {
+app.get('/*', function(req, res) {
     res.sendFile(path.join(__dirname, '/dist/frontend/index.html'));
 });
 
