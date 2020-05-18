@@ -8,7 +8,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class RoomService {
 
 	private join_url = '/api/room/join/';
-	private rooms_url = '/rooms';
+	private rooms_url = '/api/rooms';
 
 	constructor(private http: HttpClient) { }
 
