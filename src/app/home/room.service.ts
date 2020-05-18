@@ -20,6 +20,6 @@ export class RoomService {
 
 	retrieveRooms(){
 		console.log("URL: ",this.rooms_url);
-		return this.http.get(this.rooms_url, { headers: this.httpOptions, responseType: 'json'});
+		return this.http.post(this.rooms_url, { headers: this.httpOptions, responseType: 'json'});
 	}
 }

@@ -135,7 +135,7 @@ app.post('/api/room/create', (req, res, next)=>{
 
 
 //Get All Rooms
-app.get('/api/rooms', (req, res, next)=>{
+app.post('/api/rooms', (req, res, next)=>{
 
 	mongo.MongoClient.connect(MONGO_URI, (error, client)=>{
 	
