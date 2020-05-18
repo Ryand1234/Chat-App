@@ -12,7 +12,7 @@ export class RoomService {
 
 	constructor(private http: HttpClient) { }
 
-	const httpOptionsPlain = {
+	private httpOptionsPlain = {
   headers: new HttpHeaders({
     'Accept': 'text/plain',
     'Content-Type': 'text/plain'
@@ -21,10 +21,10 @@ export class RoomService {
 };
 	join(token: string){
 		var new_url = this.join_url + token;
-		return this.http.get(new_url, httpOptionsPlain);
+		return this.http.get(new_url, this.httpOptionsPlain);
 	}
 
 	retrieveRooms(){
-		return this.http.get(this.rooms_url, httpOptionsPlain);
+		return this.http.get(this.rooms_url, this.httpOptionsPlain);
 	}
 }

@@ -13,7 +13,7 @@ export class ChatService {
 	private old_url = '/api/room/chat/history';
 	constructor(private http : HttpClient) { }
 
-	const httpOptionsPlain = {
+	private httpOptionsPlain = {
   headers: new HttpHeaders({
     'Accept': 'text/plain',
     'Content-Type': 'text/plain'
@@ -21,7 +21,7 @@ export class ChatService {
   'responseType': 'json'
 };
 	retrieveOldMessage() {
-		return this.http.get(this.old_url, httpOptionsPlain);
+		return this.http.get(this.old_url, this.httpOptionsPlain);
 	}
 
 	sendMessage(data: any){
