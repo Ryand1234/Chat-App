@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
 @Injectable({
@@ -9,8 +9,15 @@ export class ActiveService {
 
 	private url = '/api/user/active';
 	constructor(public http : HttpClient) { }
-	
+
+	const httpOptionsPlain = {
+  headers: new HttpHeaders({
+    'Accept': 'text/plain',
+    'Content-Type': 'text/plain'
+  }),
+  'responseType': 'json'
+};
 	active(){
-		return this.http.get(this.url);
+		return this.http.get(this.url, httpOptionsPlain);
 	}
 }

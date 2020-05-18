@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { Observable } from 'rxjs'
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
 @Injectable({
@@ -13,9 +13,15 @@ export class ChatService {
 	private old_url = '/api/room/chat/history';
 	constructor(private http : HttpClient) { }
 
-
+	const httpOptionsPlain = {
+  headers: new HttpHeaders({
+    'Accept': 'text/plain',
+    'Content-Type': 'text/plain'
+  }),
+  'responseType': 'json'
+};
 	retrieveOldMessage() {
-		return this.http.get(this.old_url);
+		return this.http.get(this.old_url, httpOptionsPlain);
 	}
 
 	sendMessage(data: any){
