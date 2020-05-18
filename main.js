@@ -12,7 +12,7 @@ var user_name = '';
 var socket_id = {};
 var active = new Array();
 var logged = 0;
-const MONGO_URI = process.env.MONGOLAB_URI||'mongodb://localhost:5000';
+const MONGO_URI = process.env.MONGOLAB_URI||'mongodb://localhost:5000'
 var cri; //Current Room Id
 
 
@@ -20,12 +20,13 @@ app.use(session({secret:'ChatApp', resave:true, saveUninitialized: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-mongo.MongoClient.connect(MONGO_URI, (error, client)=>{
+mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true}, (error, client)=>{
 
+	console.log("URL: ",MONGO_URI);
 	if(error)
 		console.log({"msg" : "Internal Server Error"});
-	{
-	
+	else{
+		console.log("NO ERROR");
 		var user_db = client.db('chat').collection('user');
 		var room_db = client.db('chat').collection('room');
 
