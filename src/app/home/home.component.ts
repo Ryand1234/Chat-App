@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
 	ngOnInit(): void {
 		this.roomService.retrieveRooms().subscribe((result: any)=>
 		{
+			console.log("RES: ",result);
 			this.room_array = result;
 			console.log("ARRAY: ",this.room_array);
 		});
