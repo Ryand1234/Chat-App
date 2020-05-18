@@ -1,4 +1,4 @@
-var app = require('express')()
+var express = require('express')
 var http = require('http').createServer(app);
 var path = require('path')
 var socket = require('socket.io');
@@ -7,7 +7,9 @@ var bodyParser = require('body-parser')
 var mongo = require('mongodb')
 var bcrypt = require('bcryptjs')
 var jwt = require('jsonwebtoken')
+var path = require('path')
 
+var app = express();
 var user_name = '';
 var socket_id = {};
 var active = new Array();
@@ -16,6 +18,7 @@ const MONGO_URI = process.env.MONGOLAB_URI||'mongodb://localhost:5000'
 var cri; //Current Room Id
 
 
+app.use(express.static(__dirname, 'dist', {index: false}));
 app.use(session({secret:'ChatApp', resave:true, saveUninitialized: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -101,10 +104,13 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 
 
 //For All routes
-app.get('*', function (req, res) {
-  res.sendfile('./src/index.html'); // load our index.html file
+app.get('', function(req, res) {
+    res.sendFile(path.join(__dirname, 'src', 'index.html'));
 });
 
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname, 'src', 'index.html'));
+});
 
 //Routes related to Chat/Chat Rooms
 
