@@ -14,8 +14,8 @@ export class RoomService {
 
 	private httpOptionsPlain = {
   headers: new HttpHeaders({
-    'Accept': 'text/plain',
-    'Content-Type': 'text/plain'
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
   }),
   'responseType': 'json'
 };
