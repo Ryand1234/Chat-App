@@ -12,7 +12,7 @@ var user_name = '';
 var socket_id = {};
 var active = new Array();
 var logged = 0;
-const MONGO_URL = process.env.MONGOLAB_URI||'mongodb://localhost:5000';
+const MONGO_URI = process.env.MONGOLAB_URI||'mongodb://localhost:5000';
 var cri; //Current Room Id
 
 
