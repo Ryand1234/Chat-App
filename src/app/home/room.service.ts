@@ -12,19 +12,13 @@ export class RoomService {
 
 	constructor(private http: HttpClient) { }
 
-	private httpOptionsPlain = {
-  headers: new HttpHeaders({
-    'Accept': 'text/plain',
-    'Content-Type': 'text/plain'
-  }),
-  'responseType': 'text'
-};
+	httpOptions = new HttpHeaders({'Content-Type':'application/json; charset=utf-8'});
 	join(token: string){
 		var new_url = this.join_url + token;
-		return this.http.get(new_url, this.httpOptionsPlain);
+		return this.http.get(new_url, { headers: this.httpOptions, responseType: 'json'});
 	}
 
 	retrieveRooms(){
-		return this.http.get(this.rooms_url, this.httpOptionsPlain);
+		return this.http.get(this.rooms_url, { headers: this.httpOptions, responseType: 'json'});
 	}
 }

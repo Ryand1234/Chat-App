@@ -10,14 +10,8 @@ export class ActiveService {
 	private url = '/api/user/active';
 	constructor(public http : HttpClient) { }
 
-	private httpOptionsPlain = {
-  headers: new HttpHeaders({
-    'Accept': 'text/plain',
-    'Content-Type': 'text/plain'
-  }),
-  'responseType': 'text'
-};
+	httpOptions = new HttpHeaders({'Content-Type':'application/json; charset=utf-8'});
 	active(){
-		return this.http.get(this.url, this.httpOptionsPlain);
+		return this.http.get(this.url, { headers: this.httpOptions, responseType: 'json'});
 	}
 }
