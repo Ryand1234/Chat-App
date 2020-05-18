@@ -102,7 +102,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 
 //For All routes
 app.get('*', function (req, res) {
-  res.sendfile('./dist/index.html'); // load our index.html file
+  res.sendfile('./src/index.html'); // load our index.html file
 });
 
 //Routes related to Chat/Chat Rooms
