@@ -12,7 +12,7 @@ var user_name = '';
 var socket_id = {};
 var active = new Array();
 var logged = 0;
-const MONGO_URL = process.env.MONGO_URI||'mongodb://localhost:5000';
+const MONGO_URL = process.env.MONGOLAB_URI||'mongodb://localhost:5000';
 var cri; //Current Room Id
 
 
@@ -20,10 +20,10 @@ app.use(session({secret:'ChatApp', resave:true, saveUninitialized: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
+mongo.MongoClient.connect(MONGO_URI, (error, client)=>{
 
-	/*if(error)
-		res.status(200).json({"msg" : "Internal Server Error"});*/
+	if(error)
+		console.log({"msg" : "Internal Server Error"});
 	{
 	
 		var user_db = client.db('chat').collection('user');
@@ -56,7 +56,7 @@ mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
 						var user_db = client.db('chat').collection('user')
 						var message_db = client.db('chat').collection('message')
 
-						user_db.findOne({_id : new mongo.ObjectId(socket._id)}, (
+						//user_db.findOne({_id : new mongo.ObjectId(socket._id)}, (
 					});
 				});
 
@@ -103,7 +103,7 @@ mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
 
 
 //Create Chat Room
-app.post('/room/create', (req, res, next)=>{
+app.post('/api/room/create', (req, res, next)=>{
 
 	var new_room = {
 		name : req.body.name,
@@ -111,7 +111,7 @@ app.post('/room/create', (req, res, next)=>{
 		users : new Array()
 	}
 
-	mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
+	mongo.MongoClient.connect(MONGO_URI, (error, client)=>{
 
 		var room_db = client.db('chat').collection('room');
 		room_db.insertOne(new_room, (err, room)=>{
@@ -125,9 +125,9 @@ app.post('/room/create', (req, res, next)=>{
 
 
 //Get All Rooms
-app.get('/rooms', (req, res, next)=>{
+app.get('/api/rooms', (req, res, next)=>{
 
-	mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
+	mongo.MongoClient.connect(MONGO_URI, (error, client)=>{
 	
 		client.db('chat').collection('room').find({}).toArray((err, rooms)=>{
 		
@@ -147,11 +147,11 @@ app.get('/rooms', (req, res, next)=>{
 });
 
 //Join Chat Room
-app.get('/room/join/:room', (req, res, next)=>{
+app.get('/api/room/join/:room', (req, res, next)=>{
 
 	var room_id = req.params.room;
 	if(req.session._id != null){
-	mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
+	mongo.MongoClient.connect(MONGO_URI, (error, client)=>{
 	
 		var room_db = client.db('chat').collection('room');
 		var user_db = client.db('chat').collection('user');
@@ -216,9 +216,9 @@ app.get('/room/join/:room', (req, res, next)=>{
 
 
 //Retrieve Old Message of Room from Database
-app.get('/room/chat/history', (req, res, next)=>{
+app.get('/api/room/chat/history', (req, res, next)=>{
 
-	mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
+	mongo.MongoClient.connect(MONGO_URI, (error, client)=>{
 	
 		var room_db = client.db('chat').collection('room');
 		room_db.findOne({_id : new mongo.ObjectId(req.session.database_id)}, (err, room)=>{
@@ -230,10 +230,10 @@ app.get('/room/chat/history', (req, res, next)=>{
 
 
 //Retrive Old Message of Personal User
-app.get('/chat/history/:id', (req, res, next)=>{
+app.get('/api/chat/history/:id', (req, res, next)=>{
 	
 	var token = req.body.id;
-	mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
+	mongo.MongoClient.connect(MONGO_URI, (error, client)=>{
 		
 		var user_db = client.db('chat').collection('user')
 		user_db.findOne({_id : new mongo.ObjectId(token)}, (err, Ruser)=>{
@@ -275,10 +275,10 @@ app.get('/chat/history/:id', (req, res, next)=>{
 
 
 //Get All Users
-app.get('/users', (req, res, next)=>{
+app.get('/api/users', (req, res, next)=>{
 
 	var user_array = new Array();
-	mongo.MongoClient.connect(MONGO_URL, (error, client)=>{
+	mongo.MongoClient.connect(MONGO_URI, (error, client)=>{
 	
 		var user_db = client.db('chat').collection('user');
 		user_db.find({}).toArray((err, user)=>{
@@ -300,7 +300,7 @@ app.get('/users', (req, res, next)=>{
 });
 
 //Active User Endpoint
-app.get('/user/active',(req, res, next)=>{
+app.get('/api/user/active',(req, res, next)=>{
 
 	if(active.length > 0)
 	{
@@ -312,9 +312,9 @@ app.get('/user/active',(req, res, next)=>{
 
 
 //Login End Point
-app.post('/user/login', (req, res, next)=>{
+app.post('/api/user/login', (req, res, next)=>{
 
-        mongo.MongoClient.connect('mongodb://localhost:5000', (err, client)=>{
+        mongo.MongoClient.connect(MONGO_URI, (err, client)=>{
 
                 if(err)
                         res.status(200).json({"msg" : "Error"});
@@ -351,7 +351,7 @@ app.post('/user/login', (req, res, next)=>{
 
 
 //Logout EndPoint
-app.get('/user/logout', (req, res, next)=>{
+app.get('/api/user/logout', (req, res, next)=>{
 
 	var msg = req.session.user + " Disconnected";
         var i = active.indexOf(req.session.user);
@@ -375,7 +375,7 @@ app.get('/user/logout', (req, res, next)=>{
 
 
 //Register EndPoint
-app.post('/user/register', (req, res, next)=>{
+app.post('/api/user/register', (req, res, next)=>{
 
 	var hashedPasswd = bcrypt.hashSync(req.body.passwd, 8);
 	console.log("Hashed Password: ",hashedPasswd);
@@ -388,7 +388,7 @@ app.post('/user/register', (req, res, next)=>{
 		room : new Array()
         };
 
-        mongo.MongoClient.connect('mongodb://localhost:5000', (err, client)=>{
+        mongo.MongoClient.connect(MONGO_URI, (err, client)=>{
 
                 if(err)
                         res.status(200).json({"msg" : "Error"});

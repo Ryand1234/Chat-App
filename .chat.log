@@ -1,0 +1,9 @@
+Server Listening at localhost:3000
+(node:11397) DeprecationWarning: current Server Discovery and Monitoring engine is deprecated, and will be removed in a future version. To use the new Server Discover and Monitoring engine, pass option { useUnifiedTopology: true } to the MongoClient constructor.
+USE:  {
+  _id: 5eae992bfd8bff1a00a947f8,
+  email: 'riyandhiman14@gmail.com',
+  passwd: 'riyan1234',
+  name: 'Riyan'
+}
+Riyan  Connected
