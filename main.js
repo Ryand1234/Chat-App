@@ -91,7 +91,8 @@ console.log("database: ",socket.database_name);
 						
 							if(err1)
 								console.log("Error");
-							io.broadcast.in(socket.database_name).emit('server', m1sg);
+console.log("db: ",socket.database_name);
+							socket.broadcast.in(socket.database_name).emit('server', m1sg);
 						});
 					});
 				});
