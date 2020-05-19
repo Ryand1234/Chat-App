@@ -12,6 +12,6 @@ export class LogoutService {
 
         httpOptions = new HttpHeaders({'Content-Type':'application/json; 
 	logout() {
-		return this.http.get(this.url, { headers: this.httpOptions, responseType: 'json'});
+		return this.http.post(this.url, { headers: this.httpOptions, responseType: 'json'});
 	}
 }
