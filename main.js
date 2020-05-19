@@ -1,7 +1,6 @@
 var express = require('express')
 var http = require('http').createServer(app);
 var path = require('path')
-var socket = require('socket.io');
 var session = require('express-session')
 var bodyParser = require('body-parser')
 var mongo = require('mongodb')
@@ -39,7 +38,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
                 });
 		console.log("SERVER: ",server);
 
-		const io = socket.listen(server)
+		const io = require('socket.io').listen(server)
 		io.on('connection', (socket)=>{
 		
 
