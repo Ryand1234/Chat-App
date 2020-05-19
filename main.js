@@ -45,7 +45,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 
 			socket.user = user_name;
 			socket.database_id = cri;
-			console.log("USER: ",user_name);
+			console.log("USER: ",cri);
 		
 
 				
@@ -77,6 +77,9 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 						if(err)
 							console.log("Error: ", err);
 
+            socket.database_name = room.name;
+            socket.join(socket.database_name);
+
 						var history = room.history;
 						if(history == undefined)
 							history = [m1sg];
@@ -87,7 +90,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 						
 							if(err1)
 								console.log("Error");
-							io.emit('server', m1sg);
+							io.broadcast.in(socket.database_name).emit('server', m1sg);
 						});
 					});
 				});
