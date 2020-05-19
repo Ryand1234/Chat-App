@@ -92,7 +92,7 @@ console.log("database: ",socket.database_name);
 							if(err1)
 								console.log("Error");
 console.log("db: ",socket.database_name);
-							socket.broadcast.in(socket.database_name).emit('server', m1sg);
+							socket.in(socket.database_name).emit('server', m1sg);
 						});
 					});
 				});
@@ -173,6 +173,7 @@ app.post('/api/room/join/:room', (req, res, next)=>{
 		var name;
 		var present = false;
 		cri = room_id;
+              user_name = req.session.user;
 
 		room_db.findOne({_id : mongo.ObjectId(room_id)}, (err, room)=>{
 		
