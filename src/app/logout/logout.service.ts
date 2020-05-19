@@ -10,7 +10,7 @@ export class LogoutService {
 
 	constructor(private http : HttpClient) { }
 
-        httpOptions = new HttpHeaders({'Content-Type':'application/json; 
+        httpOptions = new HttpHeaders({'Content-Type':'application/json'}); 
 	logout() {
 		return this.http.post(this.url, { headers: this.httpOptions, responseType: 'json'});
 	}
