@@ -9,6 +9,7 @@ var jwt = require('jsonwebtoken')
 var path = require('path')
 
 var app = express();
+var id;
 var user_name = '';
 var socket_id = {};
 var active = new Array();
@@ -47,7 +48,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 			console.log("USER: ",user_name);
 		
 
-				socket.user = user;
+				
 				socket._id = id;
 				socket.on('personal client', (msg)=>{
 					data = {
@@ -248,7 +249,7 @@ app.post('/api/chat/history/:id', (req, res, next)=>{
 		user_db.findOne({_id : new mongo.ObjectId(token)}, (err, Ruser)=>{
 			user_db.findOne({_id: new mongo.ObjectId(req.session._id)}, (err1, user)=>{
 				
-				user = user.name;
+				user_name = user.name;
 				id = user['_id'].toString();
 				var ruser = Ruser.name;
 				var pc = user.pc;
