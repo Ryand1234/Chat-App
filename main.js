@@ -43,10 +43,9 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 		const io = require('socket.io').listen(server)
 		io.on('connection', (socket)=>{
 		
-
 			socket.user = user_name;
 			socket.database_id = cri;
-			console.log("USER: ",cri);
+			console.log("USER: ",socket.user);
 		
 
 				
@@ -69,7 +68,8 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 console.log("database: ",socket.database_name);
             socket.join(socket.database_name);
 
-				socket.on('client', (msg)=>{
+				socket.on('client', (msg)=>{ 
+console.log("Send user: ",socket.user);
 					m1sg = {
 						message : msg.message,
 						user : socket.user
@@ -92,7 +92,7 @@ console.log("database: ",socket.database_name);
 							if(err1)
 								console.log("Error");
 console.log("db: ",socket.database_name);
-							socket.in(socket.database_name).emit('server', m1sg);
+							io.sockets.in(socket.database_name).emit('server', m1sg);
 						});
 					});
 				});
@@ -172,8 +172,9 @@ app.post('/api/room/join/:room', (req, res, next)=>{
 		var user_db = client.db('chat').collection('user');
 		var name;
 		var present = false;
-		cri = room_id;
+		cri = room_id; 
               user_name = req.session.user;
+console.log("join: ",user_name);
 
 		room_db.findOne({_id : mongo.ObjectId(room_id)}, (err, room)=>{
 		
