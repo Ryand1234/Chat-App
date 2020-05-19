@@ -9,7 +9,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class ChatService {
 
-	private socket = io('http://localhost:3000');
+	private socket = io('https://chating1-app.herokuapp.com');
 	private old_url = '/api/room/chat/history';
 	constructor(private http : HttpClient) { }
 
@@ -19,7 +19,7 @@ export class ChatService {
 	}
 
 	sendMessage(data: any){
-		
+
 		this.socket.emit('client', data);
 	}
 
