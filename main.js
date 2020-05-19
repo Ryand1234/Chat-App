@@ -65,7 +65,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 					});
 				});
 
-				socket.on('client ', (msg)=>{
+				socket.on('client', (msg)=>{
 					m1sg = {
 						message : msg.message,
 						user : socket.user
