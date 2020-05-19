@@ -10,6 +10,7 @@ var path = require('path')
 
 var app = express();
 var id;
+var database_name;
 var user_name = '';
 var socket_id = {};
 var active = new Array();
@@ -64,6 +65,9 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 						//user_db.findOne({_id : new mongo.ObjectId(socket._id)}, (
 					});
 				});
+            socket.database_name = database_name;
+console.log("database: ",socket.database_name);
+            socket.join(socket.database_name);
 
 				socket.on('client', (msg)=>{
 					m1sg = {
@@ -76,9 +80,6 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 					room_db.findOne({_id : new mongo.ObjectId(socket.database_id) }, (err, room)=>{
 						if(err)
 							console.log("Error: ", err);
-
-            socket.database_name = room.name;
-            socket.join(socket.database_name);
 
 						var history = room.history;
 						if(history == undefined)
@@ -175,6 +176,7 @@ app.post('/api/room/join/:room', (req, res, next)=>{
 		room_db.findOne({_id : mongo.ObjectId(room_id)}, (err, room)=>{
 		
 			var user = room.users;
+                        database_name = room.name;
 			if(user != undefined){
 				for(var i = 0; i < user.length; i++){
 				
