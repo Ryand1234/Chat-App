@@ -15,6 +15,7 @@ export class ChatService {
 
 	httpOptions = new HttpHeaders({'Content-Type':'application/json; charset=utf-8'});
 	retrieveOldMessage() {
+		this.socket.emit('con');
 		return this.http.post(this.old_url, { headers: this.httpOptions, responseType: 'json'});
 	}
 
