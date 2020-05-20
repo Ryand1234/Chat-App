@@ -92,7 +92,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 						
 							if(err1)
 								console.log("Error");
-							var room_name_1 = room.name);
+							var room_name_1 = room.name;
 							console.log("db: ",room_name_1);
 							io.sockets.in(room_name_1).emit('server', m1sg);
 						});
