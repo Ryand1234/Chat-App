@@ -64,13 +64,11 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 						//user_db.findOne({_id : new mongo.ObjectId(socket._id)}, (
 					});
 				});
-  				          socket.database_name = database_name;
+  				          
 					  console.log("database: ",socket.database_name);
-			                  socket.join(socket.database_name);
+			                  socket.join(database_name);
 
 				socket.on('client', (msg)=>{ 
-					socket.user = user_name;
-		                        socket.database_id = cri;
 
 					console.log("Send user: ",socket.user);
 					m1sg = {
@@ -94,8 +92,9 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 						
 							if(err1)
 								console.log("Error");
-							console.log("db: ",room.name);
-							io.sockets.in(room.name).emit('server', m1sg);
+							var room_name_1 = room.name);
+							console.log("db: ",room_name_1);
+							io.sockets.in(room_name_1).emit('server', m1sg);
 						});
 					});
 				});
