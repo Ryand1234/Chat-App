@@ -69,6 +69,9 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 			                  socket.join(socket.database_name);
 
 				socket.on('client', (msg)=>{ 
+					socket.user = user_name;
+		                        socket.database_id = cri;
+
 					console.log("Send user: ",socket.user);
 					m1sg = {
 						message : msg.message,
