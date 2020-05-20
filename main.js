@@ -65,7 +65,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 					});
 				});
   				          
-					  console.log("database: ",socket.database_name);
+					  console.log("database: ",database_name);
 			                  socket.join(database_name);
 
 				socket.on('client', (msg)=>{ 
@@ -90,6 +90,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 
 						room_db.updateOne({_id : new mongo.ObjectId(socket.database_id) } , { $set : { history : history } }, (err1, update)=>{
 						
+							console.log("UPD: ",update);
 							if(err1)
 								console.log("Error");
 							var room_name_1 = room.name;
