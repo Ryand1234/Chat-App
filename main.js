@@ -64,12 +64,12 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 						//user_db.findOne({_id : new mongo.ObjectId(socket._id)}, (
 					});
 				});
-            socket.database_name = database_name;
-console.log("database: ",socket.database_name);
-            socket.join(socket.database_name);
+  				          socket.database_name = database_name;
+					  console.log("database: ",socket.database_name);
+			                  socket.join(socket.database_name);
 
 				socket.on('client', (msg)=>{ 
-console.log("Send user: ",socket.user);
+					console.log("Send user: ",socket.user);
 					m1sg = {
 						message : msg.message,
 						user : socket.user
@@ -91,8 +91,8 @@ console.log("Send user: ",socket.user);
 						
 							if(err1)
 								console.log("Error");
-console.log("db: ",socket.database_name);
-							io.sockets.in(socket.database_name).emit('server', m1sg);
+							console.log("db: ",room.name);
+							io.sockets.in(room.name).emit('server', m1sg);
 						});
 					});
 				});
