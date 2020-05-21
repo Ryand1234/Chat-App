@@ -19,6 +19,10 @@ export class ChatService {
 		return this.http.post(this.old_url, { headers: this.httpOptions, responseType: 'json'});
 	}
 
+	leave() {
+		this.socket.emit('leave');
+	}
+
 	sendMessage(data: any){
 
 		this.socket.emit('client', data);

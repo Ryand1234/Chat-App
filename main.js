@@ -73,9 +73,18 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
                                         console.log("USER: ",cri);
                                         console.log("DATA: ",socket.database_id);
 					socket.join(database_name);
+					socket.database_name = database_name;
 				});
-				socket.on('client', (msg)=>{ 
 
+				socket.on('leave', ()=>{
+					console.log("LEAVE: ",socket.database_name);
+					socket.leave(socket.database_name);
+				});
+
+				socket.on('client', (msg)=>{ 
+					
+					console.log("Room: ",socket.rooms);
+					console.log("ROOM: ",io.sockets.manager.roomClients[socket.id]);
 					console.log("Send user: ",socket.user);
 					m1sg = {
 						message : msg.message,

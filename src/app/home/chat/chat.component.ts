@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ChatService } from './chat.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { ChatService } from './chat.service';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
 
 	temp : any;
         msg : any;
@@ -16,7 +16,7 @@ export class ChatComponent implements OnInit {
         constructor(public chatService : ChatService) {
 
                 this.chatService.recieveMessage().subscribe((result)=>{
-                        console.log("RES: ",result);
+ //                       console.log("RES: ",result);
                         this.message_array.push(result);
                 });
 
@@ -28,6 +28,10 @@ export class ChatComponent implements OnInit {
                         console.log("ARRAY: ",this.message_array);
                 });
         }
+
+	ngOnDestroy() {
+		this.chatService.leave();
+	}
 
         onSubmit(){
                 this.chatService.sendMessage({message : this.message});
