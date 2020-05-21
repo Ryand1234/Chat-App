@@ -84,7 +84,9 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 				socket.on('client', (msg)=>{ 
 					
 					console.log("Room: ",socket.rooms);
-					console.log("ROOM: ",io.sockets.manager.roomClients[socket.id]);
+					try{
+						console.log("ROOM: ",io.sockets.manager.roomClients[socket.id]);
+					}
 					console.log("Send user: ",socket.user);
 					m1sg = {
 						message : msg.message,
