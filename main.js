@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true}, (error, client)=>{
 
-	console.log("URL: ",MONGO_URI);
+//	console.log("URL: ",MONGO_URI);
 	if(error)
 		console.log({"msg" : "Internal Server Error"});
 	else{
@@ -45,8 +45,8 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 		
 			socket.user = user_name;
 			socket.database_id = cri;
-			console.log("USER: ",cri);
-			console.log("DATA: ",socket.database_id);
+//			console.log("USER: ",cri);
+//			console.log("DATA: ",socket.database_id);
 
 				
 				socket._id = id;
@@ -70,21 +70,20 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 				socket.on('con', ()=>{
 					socket.user = user_name;
                                         socket.database_id = cri;
-                                        console.log("USER: ",cri);
-                                        console.log("DATA: ",socket.database_id);
+   //                                     console.log("USER: ",cri);
+ //                                       console.log("DATA: ",socket.database_id);
 					socket.join(database_name);
 					socket.database_name = database_name;
 				});
 
 				socket.on('leave', ()=>{
-					console.log("LEAVE: ",socket.database_name);
 					socket.leave(socket.database_name);
 				});
 
 				socket.on('client', (msg)=>{ 
 					
-					console.log("Room: ",socket.rooms);
-					console.log("Send user: ",socket.user);
+//					console.log("Room: ",socket.rooms);
+//					console.log("Send user: ",socket.user);
 					m1sg = {
 						message : msg.message,
 						user : socket.user
@@ -104,11 +103,11 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 
 						room_db.updateOne({_id : new mongo.ObjectId(socket.database_id) } , { $set : { history : history } }, (err1, update)=>{
 						
-							console.log("UPD: ",update);
+//							console.log("UPD: ",update);
 							if(err1)
 								console.log("Error");
 							var room_name_1 = room.name;
-							console.log("db: ",room_name_1);
+//							console.log("db: ",room_name_1);
 							io.sockets.in(room_name_1).emit('server', m1sg);
 						});
 					});
@@ -191,8 +190,8 @@ app.post('/api/room/join/:room', (req, res, next)=>{
 		var present = false;
 		cri = room_id; 
               user_name = req.session.user;
-		console.log("join: ",user_name);
-		console.log("CRI: ",cri);
+//		console.log("join: ",user_name);
+//		console.log("CRI: ",cri);
 		room_db.findOne({_id : mongo.ObjectId(room_id)}, (err, room)=>{
 		
 			var user = room.users;
