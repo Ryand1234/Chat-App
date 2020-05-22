@@ -355,6 +355,8 @@ app.post('/api/chat/history/:id', (req, res, next)=>{
 				id = user['_id'].toString();
 				var ruser = Ruser.name;
 				var pc = user.pc;
+				console.log("ID: ",req.session._id);
+				console.log("PC: ",pc);
 				if(pc == undefined){
 					res.status(200);
 				}
