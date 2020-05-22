@@ -65,11 +65,12 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 					
 						user_db.findOne({_id : new mongo.ObjectId(msg._id)}, (erR, Ruser)=>{
 						
-							var i, exist = false;
-							for(i = 0; i < user.pc.length; ++i){
+							var i, j, exist = false;
+							for(i = 0; i < user.pc.length; i){
 							
 								if(user.pc[i].user == Ruser.name)
 								{
+									j = i;
 									exist = true;
 									break;
 								}
@@ -124,7 +125,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 									user : socket.user
 								}
 
-								var id = user.pc[i]._id;
+								var id = user.pc[j]._id;
 
 								message_db.findOne({ _id : new mongo.ObjectId(id)}, (e, message)=>{
 								
@@ -358,15 +359,17 @@ app.post('/api/chat/history/:id', (req, res, next)=>{
 					res.status(200);
 				}
 				else{
-					for(var i = 0; i < pc.length; ++i)
+					var j;
+					for(var i = 0; i < pc.length; i++)
 					{
 						if(ruser == pc[i].user)
 						{
+							j = i;
 							break;
 						}
 					}
 
-					console.log("ID: ",pc[i]._id);
+					console.log("ID: ",pc[j]._id);
 					var message_db = client.db('chat').collection('message');
 					message_db.findOne({_id : new mongo.ObjectId(pc[i]._id)}, (err2, message)=>{
 					
