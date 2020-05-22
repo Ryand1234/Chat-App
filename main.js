@@ -343,7 +343,7 @@ app.post('/api/room/chat/history', (req, res, next)=>{
 //Retrive Old Message of Personal User
 app.post('/api/chat/history/:id', (req, res, next)=>{
 	
-	var token = req.body.id;
+	var token = req.params.id;
 	mongo.MongoClient.connect(MONGO_URI, (error, client)=>{
 		
 		var user_db = client.db('chat').collection('user')
