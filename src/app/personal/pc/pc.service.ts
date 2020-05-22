@@ -17,7 +17,7 @@ export class PcService {
 	RecoverOldMessage(token: string){
 		var new_recover_url = this.recover_url + token;
 		this.socket.emit('pc');
-		return this.http.post(new_recover_url), { headers: this.httpOptions, responseType: 'json'});
+		return this.http.post(new_recover_url, { headers: this.httpOptions, responseType: 'json'});
 	}
 
 	RecieveMessage(){
