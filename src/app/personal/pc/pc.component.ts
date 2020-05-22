@@ -30,7 +30,7 @@ export class PcComponent implements OnInit {
         }
 
         onSubmit(){
-                this.service.SendMessage({message: this.message});
+                this.service.SendMessage({message: this.message, _id : this.token});
                 this.message = '';
         }
 
