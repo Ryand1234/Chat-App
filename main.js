@@ -357,10 +357,11 @@ app.post('/api/chat/history/:id', (req, res, next)=>{
 				var pc = user.pc;
 				console.log("ID: ",req.session._id);
 				console.log("PC: ",pc);
-				if(pc == null){
-					res.status(200);
+				if(pc == undefined){
+					res.status(200).json({"msg" : "No History"});
 				}
 				else{
+					console.log("PC1: ",pc, " TYPE: ",typeof pc)
 					var j;
 					for(var i = 0; i < pc.length; i++)
 					{
