@@ -66,7 +66,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 						user_db.findOne({_id : new mongo.ObjectId(msg._id)}, (erR, Ruser)=>{
 						
 							var i, exist = false;
-							for(i = 0; i < user.pc.length; i++){
+							for(i = 0; i < user.pc.length; ++i){
 							
 								if(user.pc[i].user == Ruser.name)
 								{
@@ -358,7 +358,7 @@ app.post('/api/chat/history/:id', (req, res, next)=>{
 					res.status(200);
 				}
 				else{
-					for(var i = 0; i < pc.length; i++)
+					for(var i = 0; i < pc.length; ++i)
 					{
 						if(ruser == pc[i].user)
 						{
