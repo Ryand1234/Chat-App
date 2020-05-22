@@ -50,9 +50,10 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 					socket._id = id;
 					socket.user = user_name;
 					user[socket.user] = socket.id;
+					console.log("INIT");
 				});
 
-				socket.on('PC client', (msg)=>{
+				socket.on('PC_client', (msg)=>{
 					data = {
 						message: msg.message,
 						sender: socket.user
@@ -97,7 +98,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 									}
 
 									var pcU = user.pc;
-									if(pcU == undefined){
+									if(pcU.length == 0){
 										pcU = [message_user];
 									}
 									else{
@@ -105,7 +106,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 									}
 
 									var pcR = Ruser.pc;
-									if(pcR == undefined){
+									if(pcR.length == 0){
 										pcR = [recive_user];
 									}
 									else{
@@ -115,7 +116,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 									user_db.updateOne({ _id : new mongo.ObjectId(socket._id)})
 									user_db.updateOne({ _id : new mongo.ObjectId(msg._id)}, (e, upd)=>{
 									
-										socket.to(user[Ruser.name]).emit("PC server", data.message);
+										socket.to(user[Ruser.name]).emit("PC_server", data.message);
 									});
 								});
 							}
@@ -133,7 +134,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 									old_message.push(new_message);
 
 									message_db.updateOne({ _id : new mongo.ObjectId(id)}, { $set : { message : old_message } }, (er, upd)=>{
-										socket.to(user[Ruser.name]).emit("PC server", new_message);
+										socket.to(user[Ruser.name]).emit("PC_server", new_message);
 									});
 								});
 
@@ -355,13 +356,12 @@ app.post('/api/chat/history/:id', (req, res, next)=>{
 				id = user['_id'].toString();
 				var ruser = Ruser.name;
 				var pc = user.pc;
-				console.log("ID: ",req.session._id);
-				console.log("PC: ",pc);
+
 				if(pc.length == 0){
 					res.status(200).json({"msg" : "No History"});
 				}
 				else{
-					console.log("PC1: ",pc, " TYPE: ",typeof pc)
+
 					var j;
 					for(var i = 0; i < pc.length; i++)
 					{

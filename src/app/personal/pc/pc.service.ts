@@ -23,7 +23,7 @@ export class PcService {
 	RecieveMessage(){
 		var message =  new Observable<any>(
 			observer=>{
-				this.socket.on('PC server', (data)=>{
+				this.socket.on('PC_server', (data)=>{
 					observer.next(data);
 			});
 		});
@@ -31,6 +31,7 @@ export class PcService {
 	}
 
 	SendMessage(data: any){
-			this.socket.emit('PC client', data);
+		console.log("SEND: ",data);
+		this.socket.emit('PC_client', data);
 		}
 }
