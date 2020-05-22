@@ -63,7 +63,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 
 					user_db.findOne({_id : new mongo.ObjectId(socket._id)}, (err, user)=>{
 					
-						user_db.findOne({_id : new mongo.ObjectId(msg._id), (erR, Ruser)=>{
+						user_db.findOne({_id : new mongo.ObjectId(msg._id)}, (erR, Ruser)=>{
 						
 							var i, exist = false;
 							for(i = 0; i < user.pc.length; i++){
@@ -112,7 +112,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 									}
 
 									user_db.updateOne({ _id : new mongo.ObjectId(socket._id)})
-									user_db.updateOne({ _id : new mongo.ObjectId(msg._id), (e, upd)=>{
+									user_db.updateOne({ _id : new mongo.ObjectId(msg._id)}, (e, upd)=>{
 									
 										socket.to(user[Ruser.name]).emit("PC server", data.message);
 									});
@@ -131,7 +131,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 									var old_message = message.message;
 									old_message.push(new_message);
 
-									message_db.updateOne({ _id : new mongo.ObjectId(id), { $set : { message : old_message } }, (er, upd)=>{
+									message_db.updateOne({ _id : new mongo.ObjectId(id)}, { $set : { message : old_message } }, (er, upd)=>{
 										socket.to(user[Ruser.name]).emit("PC server", new_message);
 									});
 								});
