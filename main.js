@@ -12,6 +12,7 @@ var app = express();
 var id;
 var database_name;
 var user_name = '';
+var user = {}
 var socket_id = {};
 var active = new Array();
 var logged = 0;
@@ -30,7 +31,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 	if(error)
 		console.log({"msg" : "Internal Server Error"});
 	else{
-		console.log("NO ERROR");
+
 		var user_db = client.db('chat').collection('user');
 		var room_db = client.db('chat').collection('room');
 
@@ -38,34 +39,109 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
                 var server = app.listen(process.env.PORT||3000, ()=>{
                         console.log(`Server listening at ${process.env.HOST}:${process.env.PORT||3000}`);
                 });
-		console.log("SERVER: ",server);
 
 		const io = require('socket.io').listen(server)
 		io.on('connection', (socket)=>{
-		
-			socket.user = user_name;
-			socket.database_id = cri;
-//			console.log("USER: ",cri);
-//			console.log("DATA: ",socket.database_id);
 
 				
 				socket._id = id;
-				socket.on('personal client', (msg)=>{
+				socket.on('pc', ()=>{
+				
+					socket._id = id;
+					socket.user = user_name;
+					user[socket.user] = socket.id;
+				});
+
+				socket.on('PC client', (msg)=>{
 					data = {
 						message: msg.message,
 						sender: socket.user
 					}
-
-					mongo.MongoClient(MONGO_URL, (error, client)=>{
 					
-						var user_db = client.db('chat').collection('user')
-						var message_db = client.db('chat').collection('message')
+					var user_db = client.db('chat').collection('user')
+					var message_db = client.db('chat').collection('message')
 
-						//user_db.findOne({_id : new mongo.ObjectId(socket._id)}, (
+					user_db.findOne({_id : new mongo.ObjectId(socket._id)}, (err, user)={
+					
+						user_db.findOne({_id : new mongo.ObjectId(msg._id), (erR, Ruser)=>{
+						
+							var i, exist = false;
+							for(i = 0; i < user.pc.length; i++){
+							
+								if(user.pc[i].user == Ruser.name)
+								{
+									exist = true;
+									break;
+								}
+							}
+							if(exist == false){
+							
+								var data = {
+
+									message : [{
+											message : msg.message,
+											user : user.name
+										}]
+								}
+								message_db.insertOne(data, (errorIn, message)=>{
+								
+									var message_user = {
+										user : Ruser.name,
+										_id : message.ops[0]._id
+									}
+
+									var recive_user = {
+										user : user.name,
+										_id : message.ops[0]._id
+									}
+
+									var pcU = user.pc;
+									if(pcU == undefined){
+										pcU = [message_user];
+									}
+									else{
+										pcU.push(message_user);
+									}
+
+									var pcR = Ruser.pc;
+									if(pcR == undefined){
+										pcR = [recive_user];
+									}
+									else{
+										pcR.push(recive_user);
+									}
+
+									user_db.updateOne({ _id : new mongo.ObjectId(socket._id)})
+									user_db.updateOne({ _id : new mongo.ObjectId(msg._id), (e, upd)=>{
+									
+										socket.to(user[Ruser.name]).emit("PC server", data.message);
+									});
+								});
+							}
+							else{
+								var new_message = {
+									message : msg.message,
+									user : socket.user
+								}
+
+								var id = user.pc[i]._id;
+
+								message_db.findOne({ _id : new mongo.ObjectId(id)}, (e, message)=>{
+								
+									var old_message = message.message;
+									old_message.push(new_message);
+
+									message_db.updateOne({ _id : new mongo.ObjectId(id), { $set : { message : old_message } }, (er, upd)=>{
+										socket.to(user[Ruser.name]).emit("PC server", new_message);
+									});
+								});
+
+							}
+
+						});
 					});
 				});
-  				          
-			                  socket.join(database_name);
+  				
 
 				socket.on('con', ()=>{
 					socket.user = user_name;
@@ -74,6 +150,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
  //                                       console.log("DATA: ",socket.database_id);
 					socket.join(database_name);
 					socket.database_name = database_name;
+					socket.join(database_name);
 				});
 
 				socket.on('leave', ()=>{
@@ -294,7 +371,7 @@ app.post('/api/chat/history/:id', (req, res, next)=>{
 					message_db.findOne({_id : new mongo.ObjectId(pc[i]._id)}, (err2, message)=>{
 					
 						if(message == null)
-							res.status(200)
+							res.status(200).json({"msg" : "Messages Deleted"});
 						else
 							res.status(200).json(message.message);
 					});
@@ -419,7 +496,8 @@ app.post('/api/user/register', (req, res, next)=>{
                 name : req.body.name,
 		mobile: req.body.mobile,
 		username: req.body.username,
-		room : new Array()
+		room : new Array(),
+		pc : new Array()
         };
 
         mongo.MongoClient.connect(MONGO_URI, (err, client)=>{

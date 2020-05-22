@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs'
 
 
@@ -9,19 +9,21 @@ import { Observable } from 'rxjs'
 })
 export class PcService {
 
-	private socket = io('http://localhost:3000');
+	private socket = io('https://chating1-app.herokuapp.com');
 	private recover_url = '/api/chat/history/'
 	constructor(private http : HttpClient) { }
 
+	httpOptions = new HttpHeaders({'Content-Type':'application/json; charset=utf-8'});
 	RecoverOldMessage(token: string){
 		var new_recover_url = this.recover_url + token;
-		return this.http.get(new_recover_url);
+		this.socket.emit('pc');
+		return this.http.post(new_recover_url), { headers: this.httpOptions, responseType: 'json'});
 	}
 
 	RecieveMessage(){
 		var message =  new Observable<any>(
 			observer=>{
-				this.socket.on('personal server', (data)=>{
+				this.socket.on('PC server', (data)=>{
 					observer.next(data);
 			});
 		});
@@ -29,6 +31,6 @@ export class PcService {
 	}
 
 	SendMessage(data: any){
-			this.socket.emit('personal client', data);
+			this.socket.emit('PC client', data);
 		}
 }
