@@ -62,6 +62,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 					var user_db = client.db('chat').collection('user')
 					var message_db = client.db('chat').collection('message')
 
+					console.log("MSG: ",msg);
 					user_db.findOne({_id : new mongo.ObjectId(socket._id)}, (err, user)=>{
 					
 						user_db.findOne({_id : new mongo.ObjectId(msg._id)}, (erR, Ruser)=>{
