@@ -1,30 +1,55 @@
 
 .chat-head {
 	text-align: center;
+	color: grey;
+	text-shadow: 0 2px 2px white;
+	font-size: 1cm;
 }
 
 .chat-message {
 
-	align: center;
+	text-align: center;
 	margin-left : 4cm;
 	margin-right : 3cm;
 }
 
+
 input {
 	border: solid 2px cyan;
 	text-align: center;
+	font-size: 18px;
+	border-radius: 20px;
 }
 
 button {
-	background-color: seagreen;
+	background-color: lightgrey;
+	border-radius: 20px;
+	font-size: 18px;
+}
+
+button:hover {
+	transform: scale(1);
+	opacity: 2;
+	box-shadow: 4px 4px 4px 4px pink;
 }
 
 .chat-text {
 	padding: 10px;
 	margin-top : 10px;
 	margin-left: 0.5cm;
-	background-color: seagreen;
-	color: white;
+	margin-right: 0.5cm;
+	font-size: 0.4cm;
+	background-color: pink;
+	color: blue;
+	border-radius: 15px 20px 40px 30px;
+}
+
+.chat-text > p:hover {
+	transform: scaleY(2);
+	box-shadow: 4px 4px 4px 4px yellow;
+	border-radius: 15px 20px 40px 30px;
+	color: green;
+	text-shadow: 1px 1px 0 lightblue;
 }
 
 .chat-main {
@@ -32,9 +57,18 @@ button {
 	background-color: cyan;
 	margin-left : 3cm;
 	margin-right: 3cm;
+	border-radius: 20px 10px 40px;
 }
 
 a {
+	margin-top: 20px;
+	margin-left: 0.5cm;
 	text-decoration: none;
 	color: black;
+	font-size: 0.5cm;
+}
+
+a:hover {
+	color: red;
+	text-shadow: 2px 2px 0 yellow;
 }

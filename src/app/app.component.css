@@ -1,12 +1,35 @@
 * {
-	background-color : blue;
+	background-color : black;
+	font-size: 15px;
 }
 button{
 	background-color: lightgreen;
 	color: black;
 	border: round;
+	text-shadow: 0 2px 2px grey; 
+	font-size: 17px;
+	text-align: center;
+	flex: 1 1 auto;
 }
 
 #routes {
-	background-color: green;
+	background-color: black;
+}
+
+button:hover {
+	background-color: yellow;
+	color: red;
+	border-radius: 20px;
+	transform: scale(1); 
+}
+
+#head {
+	text-align: center;
+	color: red;
+	font-size: 1.5cm;
+	text-shadow: 3px 3px 0 yellow;
+}
+
+.home {
+	border-top: 5px solid blue
 }

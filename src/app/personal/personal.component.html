@@ -1,7 +1,7 @@
-<mat-card class="personal-chat">
+<mat-card class="users-page">
 	<mat-card-content>
 		<div *ngFor="let user of users">
-			<mat-card-content>
+			<mat-card-content class = "users">
 				<a href="/personal/chat/{{user._id}}">{{user.name}}</a>
 			</mat-card-content>
 		</div>

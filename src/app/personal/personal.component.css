@@ -1,5 +1,22 @@
+.users-page{
+	background-color: red;
+}
+
+.users {
+	margin-top: 20px;
+	margin: 30px;
+	padding-left: 20px;
+	box-shadow: 5px 5px 5px yellow;
+	background-color: cyan;
+}
+
+.users > a {
+	margin: 20px;
+}
 
 a{
+	text-align: center;
+	color: blue;
 	text-decoration: none;
-
+	font-size: 20px;
 }

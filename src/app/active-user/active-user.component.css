@@ -1,0 +1,18 @@
+p{
+	color: cyan;
+	font-size: 20px;
+}
+
+.active-user-card {
+	background-color: red;
+	border-radius: 10px 20px 40px 30px;
+	box-shadow: 7px 7px 0 yellow;
+	opacity: 2;
+	margin: 20px;
+}
+
+.active-user-card:hover {
+	transform: scaleZ(2);
+	transform: scaleY(1.5);
+	transform: skew(20deg);
+}

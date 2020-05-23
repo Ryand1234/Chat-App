@@ -11,7 +11,9 @@ export class ActiveUserComponent implements OnInit {
 
 	constructor(public service : ActiveService) { }
 
-	active_user: any ;
+	active_user: any = [
+		"Riyan", "Emma", "Kristin"
+	]
 	ngOnInit(): void {
 
 		this.service.active().subscribe((result: any)=>{

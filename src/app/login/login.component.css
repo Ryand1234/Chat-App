@@ -2,17 +2,29 @@
 	text-align : center;
 	border : 8cm;
 	padding : 5em;
-	background-color: green;
+	background-color: black;
 }
 
-
-
 .details {
-	
-	background-color : lightgrey;
+	background-color : pink;
+	border-radius: 15px 20px 40px 30px;
 }
 
 .head {
 	font-size : 2em;
 	background-color : orange;
+	border-radius: 20px 20px 20px 20px;
+	text-shadow: 3px 3px 0 pink;
+}
+
+button {
+	border-radius: 20px;
+	font-size: 18px;
+	text-shadow: 3px 3px 0 yellow;
+	color: red;
+}
+
+button:hover {
+	transform: skew(20deg);
+	box-shadow: 4px 4px 4px 4px blue;
 }

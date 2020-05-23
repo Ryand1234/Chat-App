@@ -13,8 +13,20 @@ export class HomeComponent implements OnInit {
 	temp : any;
 	msg : any;
 	room : string;
-	room_array : any = new Array();
+	//room_array : any = new Array();
 
+	// Test Array
+	room_array : any = [
+		{
+			name : "PubG Room"
+		},
+		{
+			name : "Fortnite Room"
+		},
+		{
+			name : "GTA V Room"
+		}
+	];
 	constructor(public roomService : RoomService,
 		public router : Router) { }
 	ngOnInit(): void {

@@ -1,12 +1,14 @@
 <h1 id="head"> Chat Application </h1>
 
-<mat-toolbar>
-	<button mat-button routerLink="/profile">Profile</button>
-	<button mat-button routerLink="/login">Login</button>
-	<button mat-button routerLink="/register">Register</button>
-	<button mat-button routerLink="/room">Rooms</button>
-	<button mat-button routerLink="/active">Active User</button>
-	<button mat-button routerLink="/logout">Logout</button>
-</mat-toolbar>
+<div class="home">
+	<mat-toolbar>
+		<button mat-button routerLink="/profile">Profile</button>
+		<button mat-button routerLink="/login">Login</button>
+		<button mat-button routerLink="/register">Register</button>
+		<button mat-button routerLink="/room">Rooms</button>
+		<button mat-button routerLink="/active">Active User</button>
+		<button mat-button routerLink="/logout">Logout</button>
+	</mat-toolbar>
 
-<router-outlet class="routes"></router-outlet>
+	<router-outlet class="routes"></router-outlet>
+</div>
