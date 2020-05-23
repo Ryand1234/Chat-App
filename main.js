@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true}, (error, client)=>{
 
-//	console.log("URL: ",MONGO_URI);
+
 	if(error)
 		console.log({"msg" : "Internal Server Error"});
 	else{
@@ -49,12 +49,10 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 				
 				socket.on('pc', ()=>{
 				
-					console.log("INitialize");
 					socket.user_id = id;
-					console.log("ID: ",id," USER: ",socket.user_id);
 					socket.user = user_name;
 					user_socket[socket.user] = socket.id;
-					console.log("INIT");
+
 				});
 
 				socket.on('PC_client', (msg)=>{
@@ -64,14 +62,13 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 					}
 					
 
-					console.log("ID: ",socket.user_id);
 
 					user_db.findOne({_id : new mongo.ObjectId(socket.user_id)}, (err, user)=>{
 					
 						user_db.findOne({_id : new mongo.ObjectId(msg._id)}, (erR, Ruser)=>{
 						
 							var i, j, exist = false;
-							console.log("USER_DB: ",user);
+
 							for(i = 0; i < user.pc.length; i){
 							
 								if(user.pc[i].user == Ruser.name)
@@ -122,6 +119,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 									user_db.updateOne({ _id : new mongo.ObjectId(msg._id)}, { $set: { pc : pcR } }, (e, upd)=>{
 									
 										socket.to(user_socket[Ruser.name]).emit("PC_server", data.message);
+										socket.to(user_socket[user.name]).emit("PC_server", data.message);
 									});
 								});
 							}
@@ -141,6 +139,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 
 									message_db.updateOne({ _id : new mongo.ObjectId(id)}, { $set : { message : old_message } }, (er, upd)=>{
 										socket.to(user_socket[Ruser.name]).emit("PC_server", new_message);
+										socket.to(user_socket[user.name]).emit("PC_server", new_message);
 									});
 								});
 
@@ -154,8 +153,6 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 				socket.on('con', ()=>{
 					socket.user = user_name;
                                         socket.database_id = cri;
-   //                                     console.log("USER: ",cri);
- //                                       console.log("DATA: ",socket.database_id);
 					socket.join(database_name);
 					socket.database_name = database_name;
 					socket.join(database_name);
@@ -167,15 +164,12 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 
 				socket.on('client', (msg)=>{ 
 					
-//					console.log("Room: ",socket.rooms);
-//					console.log("Send user: ",socket.user);
 					m1sg = {
 						message : msg.message,
 						user : socket.user
 					};
 					
 
-	//				console.log("ID: ",socket.database_id);
 					room_db.findOne({_id : new mongo.ObjectId(socket.database_id) }, (err, room)=>{
 						if(err)
 							console.log("Error: ", err);
@@ -188,11 +182,10 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 
 						room_db.updateOne({_id : new mongo.ObjectId(socket.database_id) } , { $set : { history : history } }, (err1, update)=>{
 						
-//							console.log("UPD: ",update);
+
 							if(err1)
 								console.log("Error");
 							var room_name_1 = room.name;
-//							console.log("db: ",room_name_1);
 							io.sockets.in(room_name_1).emit('server', m1sg);
 						});
 					});
@@ -247,12 +240,10 @@ app.post('/api/rooms', (req, res, next)=>{
 	
 		client.db('chat').collection('room').find({}).toArray((err, rooms)=>{
 		
-			//console.log("ROOM: ",rooms);
 			if((rooms.length > 0)&&(rooms != null)){
 				for(var i = 0; i<rooms.length; i++){
 					rooms[i]['_id'] = rooms[i]['_id'].toString();
 				}
-	//			console.log("ROOMS: ",rooms);
 			}
 			if(err)
 				res.status(200).json({"msg" : "Internal Server Error"});
@@ -275,8 +266,8 @@ app.post('/api/room/join/:room', (req, res, next)=>{
 		var present = false;
 		cri = room_id; 
               user_name = req.session.user;
-//		console.log("join: ",user_name);
-//		console.log("CRI: ",cri);
+
+
 		room_db.findOne({_id : mongo.ObjectId(room_id)}, (err, room)=>{
 		
 			var user = room.users;
@@ -288,12 +279,9 @@ app.post('/api/room/join/:room', (req, res, next)=>{
 						present = true;
 						break;
 					}
-			//		else{
-			//			console.log("USER: ",user[i][1]," REQ: ",req.session._id);
-			//		}
 				}
 			}
-			//console.log("IN PRE: ",present);
+
 			name = room.name;
 			req.session.database_id = room_id;
 			if(present == false){
@@ -341,7 +329,7 @@ app.post('/api/room/chat/history', (req, res, next)=>{
 	
 		var room_db = client.db('chat').collection('room');
 		room_db.findOne({_id : new mongo.ObjectId(req.session.database_id)}, (err, room)=>{
-			//console.log("ROOM: ",room," ID: ",req.session.database_id," Type: ",typeof req.session.database_id);
+
 			res.status(200).json(room.history);
 		});
 	});
