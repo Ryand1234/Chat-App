@@ -32,21 +32,26 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 		console.log({"msg" : "Internal Server Error"});
 	else{
 
+		//Collection Declaration
 		var user_db = client.db('chat').collection('user');
 		var room_db = client.db('chat').collection('room');
+		var message_db = client.db('chat').collection('message')
 
-		 //Server Listen
+		//Server Listen
                 var server = app.listen(process.env.PORT||3000, ()=>{
                         console.log(`Server listening at ${process.env.HOST}:${process.env.PORT||3000}`);
                 });
 
+		//Socket Logic
 		const io = require('socket.io').listen(server)
 		io.on('connection', (socket)=>{
 
 				
 				socket.on('pc', ()=>{
 				
+					console.log("INitialize");
 					socket.user_id = id;
+					console.log("ID: ",id," USER: ",socket.user_id);
 					socket.user = user_name;
 					user_socket[socket.user] = socket.id;
 					console.log("INIT");
@@ -58,8 +63,6 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 						sender: socket.user
 					}
 					
-					var user_db = client.db('chat').collection('user')
-					var message_db = client.db('chat').collection('message')
 
 					console.log("ID: ",socket.user_id);
 
