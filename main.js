@@ -390,25 +390,30 @@ app.post('/api/chat/history/:id', (req, res, next)=>{
 app.post('/api/users', (req, res, next)=>{
 
 	var user_array = new Array();
-	mongo.MongoClient.connect(MONGO_URI, (error, client)=>{
-	
-		var user_db = client.db('chat').collection('user');
-		user_db.find({}).toArray((err, user)=>{
-		
-			for(var i = 0; i < user.length; i++){
-			
-				if(user[i].name != req.session.user){
-					if(user_array == undefined)
-						user_array = [user[i]];
-					else
-						user_array.push(user[i]);
-				}
-			}
+	if(req.session._id != undefined){
+		mongo.MongoClient.connect(MONGO_URI, (error, client)=>{
 
-			res.status(200).json(user_array);
-		
+			var user_db = client.db('chat').collection('user');
+			user_db.find({}).toArray((err, user)=>{
+
+				for(var i = 0; i < user.length; i++){
+
+					if(user[i].name != req.session.user){
+						if(user_array == undefined)
+							user_array = [user[i]];
+						else
+							user_array.push(user[i]);
+					}
+				}
+
+				res.status(200).json(user_array);
+
+			});
 		});
-	});
+	}
+	else{
+		res.status(500).json({"err" : "Please Login to send Personal Message"})
+	}
 });
 
 //Active User Endpoint

@@ -1,9 +1,9 @@
 <mat-card class="login">
 	<h3 class="head">Log In</h3>
-	<p *ngIf="(msg)"> {{msg.msg}}</p>
-	<a *ngIf="(msg)" href="/room">Room HomePage</a>
 	<mat-card-content>
 		<div class="details">
+			<p *ngIf="(msg)"> {{msg.msg}}</p>
+			<a *ngIf="(msg)" href="/room">Room HomePage</a>
 			<form (ngSubmit)="onSubmit()" [formGroup]="info">
 				<mat-form-field>
 					<input matInput formControlName="email" placeholder="Email" type="text">

@@ -2,6 +2,10 @@
 	background-color: red;
 }
 
+.error{
+	color: white;
+}
+
 .users {
 	margin-top: 20px;
 	margin: 30px;
