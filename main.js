@@ -46,7 +46,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 				
 				socket.on('pc', ()=>{
 				
-					socket._id = id;
+					socket.user_id = id;
 					socket.user = user_name;
 					user_socket[socket.user] = socket.id;
 					console.log("INIT");
@@ -61,11 +61,9 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 					var user_db = client.db('chat').collection('user')
 					var message_db = client.db('chat').collection('message')
 
-					console.log("MSG: ",msg._id);
-					console.log("ID: ",socket._id);
-					console.log("NAME: ",socket.user);
-					console.log("USER: ",user_socket)
-					user_db.findOne({_id : new mongo.ObjectId(socket._id)}, (err, user)=>{
+					console.log("ID: ",socket.user_id);
+
+					user_db.findOne({_id : new mongo.ObjectId(socket.user_id)}, (err, user)=>{
 					
 						user_db.findOne({_id : new mongo.ObjectId(msg._id)}, (erR, Ruser)=>{
 						
@@ -117,8 +115,8 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 										pcR.push(recive_user);
 									}
 
-									user_db.updateOne({ _id : new mongo.ObjectId(socket._id)})
-									user_db.updateOne({ _id : new mongo.ObjectId(msg._id)}, (e, upd)=>{
+									user_db.updateOne({ _id : new mongo.ObjectId(socket.user_id)}, { $set : { pc : pcU } } )
+									user_db.updateOne({ _id : new mongo.ObjectId(msg._id)}, { $set: { pc : pcR } }, (e, upd)=>{
 									
 										socket.to(user_socket[Ruser.name]).emit("PC_server", data.message);
 									});
