@@ -16,10 +16,12 @@ export class PcService {
 	httpOptions = new HttpHeaders({'Content-Type':'application/json; charset=utf-8'});
 	RecoverOldMessage(token: string){
 		var new_recover_url = this.recover_url + token;
-		this.socket.emit('pc');
 		return this.http.post(new_recover_url, { headers: this.httpOptions, responseType: 'json'});
 	}
 
+	init() {
+		this.socket.emit('pc');
+	}
 	RecieveMessage(){
 		var message =  new Observable<any>(
 			observer=>{

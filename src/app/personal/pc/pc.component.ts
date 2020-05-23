@@ -26,7 +26,9 @@ export class PcComponent implements OnInit {
                 console.log("Token: ",this.token);
                 this.service.RecoverOldMessage(this.token).subscribe((result: any)=>{
                         this.chat = result;
-                });
+		});
+
+		this.service.init();
         }
 
         onSubmit(){
