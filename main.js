@@ -12,7 +12,7 @@ var app = express();
 var id;
 var database_name;
 var user_name = '';
-var user = {}
+var user_socket = {}
 var socket_id = {};
 var active = new Array();
 var logged = 0;
@@ -44,12 +44,11 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 		io.on('connection', (socket)=>{
 
 				
-				socket._id = id;
 				socket.on('pc', ()=>{
 				
 					socket._id = id;
 					socket.user = user_name;
-					user[socket.user] = socket.id;
+					user_socket[socket.user] = socket.id;
 					console.log("INIT");
 				});
 
@@ -62,12 +61,16 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 					var user_db = client.db('chat').collection('user')
 					var message_db = client.db('chat').collection('message')
 
-					console.log("MSG: ",msg);
+					console.log("MSG: ",msg._id);
+					console.log("ID: ",socket._id);
+					console.log("NAME: ",socket.user);
+					console.log("USER: ",user_socket)
 					user_db.findOne({_id : new mongo.ObjectId(socket._id)}, (err, user)=>{
 					
 						user_db.findOne({_id : new mongo.ObjectId(msg._id)}, (erR, Ruser)=>{
 						
 							var i, j, exist = false;
+							console.log("USER_DB: ",user);
 							for(i = 0; i < user.pc.length; i){
 							
 								if(user.pc[i].user == Ruser.name)
@@ -117,7 +120,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 									user_db.updateOne({ _id : new mongo.ObjectId(socket._id)})
 									user_db.updateOne({ _id : new mongo.ObjectId(msg._id)}, (e, upd)=>{
 									
-										socket.to(user[Ruser.name]).emit("PC_server", data.message);
+										socket.to(user_socket[Ruser.name]).emit("PC_server", data.message);
 									});
 								});
 							}
@@ -128,6 +131,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 								}
 
 								var id = user.pc[j]._id;
+								console.log("J: ",j," ID: ",id);
 
 								message_db.findOne({ _id : new mongo.ObjectId(id)}, (e, message)=>{
 								
@@ -135,7 +139,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 									old_message.push(new_message);
 
 									message_db.updateOne({ _id : new mongo.ObjectId(id)}, { $set : { message : old_message } }, (er, upd)=>{
-										socket.to(user[Ruser.name]).emit("PC_server", new_message);
+										socket.to(user_socket[Ruser.name]).emit("PC_server", new_message);
 									});
 								});
 
@@ -355,6 +359,7 @@ app.post('/api/chat/history/:id', (req, res, next)=>{
 				
 				user_name = user.name;
 				id = user['_id'].toString();
+				console.log("ID: ",id);
 				var ruser = Ruser.name;
 				var pc = user.pc;
 
