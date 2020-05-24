@@ -7,7 +7,6 @@ var mongo = require('mongodb')
 var bcrypt = require('bcryptjs')
 var jwt = require('jsonwebtoken')
 var path = require('path')
-require('dotenv').config()
 
 var app = express();
 var id;
