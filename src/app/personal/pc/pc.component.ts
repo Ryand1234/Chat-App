@@ -20,14 +20,17 @@ export class PcComponent implements OnInit {
 
 	token: string;
 	url : string;
+	error : any;
 	ngOnInit(): void {
 		this.url = this.router.url
                 this.token = this.url.split('/')[3];
-                console.log("Token: ",this.token);
+
                 this.service.RecoverOldMessage(this.token).subscribe((result: any)=>{
 			this.chat = result;
 			this.service.init();
-		});
+		},(err)=>{
+			this.error = err;
+			});
         }
 
         onSubmit(){

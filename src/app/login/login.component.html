@@ -3,6 +3,7 @@
 	<mat-card-content>
 		<div class="details">
 			<p *ngIf="(msg)"> {{msg.msg}}</p>
+			 <p class="error" *ngIf="(error)">{{error.error.err}}</p>
 			<a *ngIf="(msg)" href="/room">Room HomePage</a>
 			<form (ngSubmit)="onSubmit()" [formGroup]="info">
 				<mat-form-field>

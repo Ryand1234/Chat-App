@@ -1,4 +1,5 @@
 <h3 class="active-user-header">Active Users</h3>
+<p class="error" *ngIf="(error)">{{error.error.err}}</p>
 <div clas="active-user" *ngFor="let user of active_user">
 	<mat-card class="active-user-card">
 		<mat-card-content>

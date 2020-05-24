@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 export class HomeComponent implements OnInit {
 
 	temp : any;
-	msg : any;
+	error : any;
 	room : string;
 	room_array : any = new Array();
 
@@ -20,9 +20,7 @@ export class HomeComponent implements OnInit {
 	ngOnInit(): void {
 		this.roomService.retrieveRooms().subscribe((result: any)=>
 		{
-			console.log("RES: ",result);
 			this.room_array = result;
-			console.log("ARRAY: ",this.room_array);
 		});
 	}
 
@@ -45,6 +43,9 @@ export class HomeComponent implements OnInit {
 		this.token = this.find(this.room);
 		this.roomService.join(this.token).subscribe((result:any)=>{
 		this.router.navigate(['/chat']);
+		}, (err)=>{
+			this.error = err;
+			console.log("ERROR: ",this.error);
 		});
 	}
 

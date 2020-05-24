@@ -26,6 +26,11 @@ button {
         color: white;
 }
 
+.text{
+	overflow-y: auto;
+	max-height: 300px;
+}
+
 .chat-main {
         padding: 5px;
         background-color: cyan;

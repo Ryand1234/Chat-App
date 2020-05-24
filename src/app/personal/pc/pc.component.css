@@ -1,0 +1,41 @@
+.error{
+        color: white;
+}
+
+
+.chat-message {
+
+        align: center;
+        margin-left : 4cm;
+        margin-right : 3cm;
+}
+
+input {
+        border: solid 2px cyan;
+        text-align: center;
+}
+
+button {
+        background-color: seagreen;
+}
+
+.chat-text {
+        padding: 10px;
+        margin-top : 10px;
+        margin-left: 0.5cm;
+        background-color: seagreen;
+        color: white;
+}
+
+.text{
+        overflow-y: auto;
+        max-height: 300px;
+}
+
+.chat-main {
+        padding: 5px;
+        background-color: cyan;
+        margin-left : 3cm;
+}
+
+

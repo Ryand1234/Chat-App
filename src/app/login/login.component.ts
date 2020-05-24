@@ -17,6 +17,7 @@ export class LoginComponent {
   constructor(private service : LoginService) { }
 
 	msg: any;
+	error: any;
 
   	onSubmit() {
 	//	console.log("data: ",this.info);
@@ -26,7 +27,9 @@ export class LoginComponent {
 		};
 
 		this.service.login(login).subscribe((result: any)=>{
-		this.msg = result;}, (err)=>{ this.msg = err});
+		this.error = '';
+		this.msg = result;}, (err)=>{ 
+		this.error = err});
 	//	console.log("Error: ",this.msg);
 	}
 
