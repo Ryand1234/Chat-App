@@ -1,4 +1,5 @@
 <mat-card class="room">
+	<p class="error" *ngIf="(error)">{{error.error.err}}</p>
 	<h2 class="room-head">Create Room</h2>
 	<mat-card-content class="room-create">
 		<input [(ngModel)]="room_name" placeholder="Room Name" name="room">

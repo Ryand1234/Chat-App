@@ -1,17 +1,17 @@
 <h3 class="chat-head">Chat</h3>
 <mat-card class="chat-main">
-	<div>
 	<mat-card-content>
-                <div *ngFor="let message of message_array">
-                        <mat-card-content class="chat-text">
-                                <p>{{message.message}}</p>
-                                <mat-card-content class="chat-text-user">
-                                        <p>{{message.user}}</p>
-                                </mat-card-content>
-                        </mat-card-content>
-                </div>
+		<div class="text">
+	                <div *ngFor="let message of message_array">
+        	                <mat-card-content class="chat-text">
+                	                <p>{{message.message}}</p>
+                        	        <mat-card-content class="chat-text-user">
+                                	        <p>Sender: {{message.user}}</p>
+	                                </mat-card-content>
+        	                </mat-card-content>
+                	</div>
+		</div>
         </mat-card-content>
-	</div>
 </mat-card>
 
 <div class="chat-message">

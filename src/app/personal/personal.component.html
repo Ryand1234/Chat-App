@@ -1,6 +1,6 @@
 
 <mat-card class="users-page">
-	<p class="error" *ngIf="(error)">{{error.err}}</p>
+	<p class="error" *ngIf="(error)">{{error.error.err}}</p>
 	<mat-card-content>
 		<div *ngFor="let user of users">
 			<mat-card-content class = "users">

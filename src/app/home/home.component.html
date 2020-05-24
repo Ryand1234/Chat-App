@@ -1,6 +1,7 @@
 
 <h3 class="chat-head">Rooms</h3>
 <mat-card class="chat-main">
+	<p class="error" *ngIf="(error)">{{error.error.err}}</p>
 	<a href="/room/create">Create Room</a>
 	<br>
 	<a href="/personal" style=" text-align: right;">Personal Chat</a>

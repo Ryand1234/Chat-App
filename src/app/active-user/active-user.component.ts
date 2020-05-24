@@ -12,11 +12,14 @@ export class ActiveUserComponent implements OnInit {
 	constructor(public service : ActiveService) { }
 
 	active_user: any;
+	error : any;
 
 	ngOnInit(): void {
 
 		this.service.active().subscribe((result: any)=>{
 			this.active_user = result;
+		}, (err)=>{
+			this.error = err;
 		});
 	}
 

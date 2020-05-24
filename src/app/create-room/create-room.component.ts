@@ -14,11 +14,14 @@ export class CreateRoomComponent {
 		private router : Router) { }
 
 	data: any = new Object();
+	error: any;
 	onSubmit(){
 		this.data.name = this.room_name;
 		console.log("Data: ",this.data);
 		this.service.createRoom(this.data).subscribe((result)=>{
 			this.router.navigate(['/room']);
+		}, (err)=>{
+			this.error = err;
 		});
 	}
 }

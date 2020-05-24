@@ -7,6 +7,7 @@ var mongo = require('mongodb')
 var bcrypt = require('bcryptjs')
 var jwt = require('jsonwebtoken')
 var path = require('path')
+require('dotenv').config()
 
 var app = express();
 var id;
@@ -225,7 +226,7 @@ app.post('/api/room/create', (req, res, next)=>{
 		var room_db = client.db('chat').collection('room');
 		room_db.insertOne(new_room, (err, room)=>{
 			if(err)
-				res.status(200).json({"msg" : "Error Creating Room "});
+				res.status(500).json({"err" : "Error Creating Room "});
 			else
 				res.status(200).json({"msg" : "Room Created" });
 		});
@@ -246,7 +247,7 @@ app.post('/api/rooms', (req, res, next)=>{
 				}
 			}
 			if(err)
-				res.status(200).json({"msg" : "Internal Server Error"});
+				res.status(500).json({"err" : "Internal Server Error"});
 			else
 				res.status(200).json(rooms);
 		});
@@ -293,7 +294,7 @@ app.post('/api/room/join/:room', (req, res, next)=>{
 				room_db.updateOne({_id : new mongo.ObjectId(room_id)}, {$set : { users : user } }, (err, update)=>{
 				
 					if(err)
-						res.status(200).json({"msg" : "Internal Server Error"});
+						res.status(500).json({"err" : "Internal Server Error"});
 	
 				});
 				user_db.findOne({_id : new mongo.ObjectId(req.session._id)}, (err, user)=>{
@@ -305,7 +306,7 @@ app.post('/api/room/join/:room', (req, res, next)=>{
 		
 					user_db.updateOne({_id : new mongo.ObjectId(req.session._id)}, { $set : { rooms : room } } , (err, update)=>{
 						if(err)
-							res.status(200).json({"msg" : "Internal Server Error"});
+							res.status(500).json({"err" : "Internal Server Error"});
 						else{
 							res.status(200).json({"msg" : "Room Joined"});
 						}
@@ -318,7 +319,7 @@ app.post('/api/room/join/:room', (req, res, next)=>{
 	});
 	}
 	else
-		res.status(200).json({"msg" : "Please Login to join a room"});
+		res.status(500).json({"err" : "Please Login to join a room"});
 });
 
 
@@ -348,7 +349,6 @@ app.post('/api/chat/history/:id', (req, res, next)=>{
 				
 				user_name = user.name;
 				id = user['_id'].toString();
-				console.log("ID: ",id);
 				var ruser = Ruser.name;
 				var pc = user.pc;
 
@@ -367,12 +367,12 @@ app.post('/api/chat/history/:id', (req, res, next)=>{
 						}
 					}
 
-					console.log("ID: ",pc[j]._id);
+
 					var message_db = client.db('chat').collection('message');
 					message_db.findOne({_id : new mongo.ObjectId(pc[i]._id)}, (err2, message)=>{
 					
 						if(message == null)
-							res.status(200).json({"msg" : "Messages Deleted"});
+							res.status(500).json({"err" : "Messages Deleted"});
 						else
 							res.status(200).json(message.message);
 					});
@@ -424,7 +424,7 @@ app.post('/api/user/active',(req, res, next)=>{
 		res.status(200).json(active);
 	}
 	else
-		res.status(200).json({"msg" : "No active User"});
+		res.status(500).json({"err" : "No active User"});
 });
 
 
@@ -457,9 +457,9 @@ app.post('/api/user/login', (req, res, next)=>{
                                         	res.status(200).json({"msg" : "Login SuccessFUll"});
 					}
 					else
-						res.status(200).json({"msg" : "Incorrect Password"});
+						res.status(500).json({"err" : "Incorrect Password"});
                                 }else
-                                        res.status(200).json({"msg" : "Incorrect Email"});
+                                        res.status(500).json({"err" : "Incorrect Email"});
 
                         });
                 }
@@ -483,7 +483,6 @@ app.post('/api/user/logout', (req, res, next)=>{
                 }
                 else{
 	
-                        console.log(msg);
 			res.status(200).json({"msg" : "Logout Sucessfull"});
 		}
         });
