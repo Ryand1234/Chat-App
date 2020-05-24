@@ -16,7 +16,10 @@ export class PersonalComponent implements OnInit {
 	ngOnInit(): void {
 		this.service.getUser().subscribe((result: any)=>{
 			this.users = result;
-		}, (err)=>{ this.error = err});
+		}, (err)=>{ 
+			this.error = err;
+			console.log("ERROR: ",this.error);	
+		});
 	}
 
 }

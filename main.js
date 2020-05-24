@@ -119,7 +119,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 									user_db.updateOne({ _id : new mongo.ObjectId(msg._id)}, { $set: { pc : pcR } }, (e, upd)=>{
 									
 										socket.to(user_socket[Ruser.name]).emit("PC_server", data.message);
-										socket.to(user_socket[user.name]).emit("PC_server", data.message);
+										socket.emit("PC_server", data.message);
 									});
 								});
 							}
@@ -139,7 +139,7 @@ mongo.MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology
 
 									message_db.updateOne({ _id : new mongo.ObjectId(id)}, { $set : { message : old_message } }, (er, upd)=>{
 										socket.to(user_socket[Ruser.name]).emit("PC_server", new_message);
-										socket.to(user_socket[user.name]).emit("PC_server", new_message);
+										socket.emit("PC_server", new_message);
 									});
 								});
 
