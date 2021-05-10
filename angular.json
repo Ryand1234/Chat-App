@@ -64,7 +64,7 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "frontend:build",
-	    "proxyConfig": "./proxy.conf.json"
+            "proxyConfig": "./proxy.conf.json"
           },
           "configurations": {
             "production": {
@@ -124,5 +124,8 @@
       }
     }
   },
-  "defaultProject": "frontend"
+  "defaultProject": "frontend",
+  "cli": {
+    "analytics": "6ccc7b3b-4334-4956-bc43-d16b5c9b37d6"
+  }
 }
